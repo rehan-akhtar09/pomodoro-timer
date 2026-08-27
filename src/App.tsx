@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { BirdCompanion } from './components/bird/BirdCompanion';
 import { timerStateToBirdState } from './components/bird/birdStates';
 import { Environment } from './components/environment/Environment';
@@ -7,8 +8,10 @@ import { Timer } from './components/timer/Timer';
 import { TimerControls } from './components/timer/TimerControls';
 import { TimerProgress } from './components/timer/TimerProgress';
 import { usePomodoro } from './hooks/usePomodoro';
+import { useRewards } from './hooks/useRewards';
 import { useSessionStats } from './hooks/useSessionStats';
 import { useSettings } from './hooks/useSettings';
+import type { SessionCompletionEvent } from './hooks/usePomodoro';
 import './App.css';
 
 /**
@@ -24,9 +27,22 @@ import './App.css';
 export function App() {
     const { settings, saveFailed, updateSettings } = useSettings();
     const { stats, recordSession } = useSessionStats();
+    const { rewards, recordReward } = useRewards();
+
+    // One completion handler feeds both the stats history and the reward
+    // system through the timer's single `onSessionComplete` extension point —
+    // no second completion-detection mechanism (rules.md §6).
+    const handleSessionComplete = useCallback(
+        (event: SessionCompletionEvent) => {
+            recordSession(event);
+            recordReward(event);
+        },
+        [recordSession, recordReward],
+    );
+
     const { state, mode, remainingMs, durationMs, start, pause, resume, reset, skip } = usePomodoro(
         settings,
-        recordSession,
+        handleSessionComplete,
     );
 
     const birdState = timerStateToBirdState(state);
@@ -39,7 +55,7 @@ export function App() {
 
             <main className="app__main">
                 <div className="scene">
-                    <Environment />
+                    <Environment rewards={rewards} />
                     <div className="scene__bird">
                         <BirdCompanion state={birdState} />
                     </div>

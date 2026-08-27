@@ -1,18 +1,60 @@
 import './Environment.css';
 
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { GiftRecord } from '../../types/rewards';
+import { selectVisibleGifts } from '../../utils/rewards';
+
 /**
- * Environment — the cozy room scene behind the bird (Phase 3).
+ * Layout slots for the nest (design.md §16 — at most 12 visible gifts at once).
+ * Ordered back-row → front-row so the newest gift (last in the visible window)
+ * lands front-and-center. Percentages are relative to the nest container.
+ */
+const GIFT_SLOTS: ReadonlyArray<{
+  x: number;
+  y: number;
+  rotate: number;
+  scale: number;
+}> = [
+    { x: 18, y: 32, rotate: -12, scale: 0.75 },
+    { x: 48, y: 26, rotate: 6, scale: 0.85 },
+    { x: 78, y: 32, rotate: 14, scale: 0.75 },
+    { x: 6, y: 54, rotate: -8, scale: 0.95 },
+    { x: 30, y: 50, rotate: 4, scale: 1.05 },
+    { x: 58, y: 56, rotate: -5, scale: 0.95 },
+    { x: 86, y: 52, rotate: 10, scale: 1.0 },
+    { x: 14, y: 76, rotate: 6, scale: 1.05 },
+    { x: 44, y: 78, rotate: -6, scale: 1.12 },
+    { x: 72, y: 74, rotate: 4, scale: 1.05 },
+    { x: 30, y: 92, rotate: -4, scale: 0.95 },
+    { x: 58, y: 90, rotate: 8, scale: 1.0 },
+  ];
+
+interface EnvironmentProps {
+  /** Full gift collection; only the newest `MAX_VISIBLE_GIFTS` are displayed. */
+  rewards?: readonly GiftRecord[];
+}
+
+/**
+ * Environment — the cozy room scene behind the bird (Phase 3), extended by the
+ * Phase 4B reward system to display earned gifts inside the nest.
  *
  * Drawn as a single layered inline SVG so the whole scene stays one
  * replaceable, self-contained visual layer — independent of the bird
- * (architecture.md §3) and the timer. The scene is purely decorative, so
- * it is hidden from assistive technology with `aria-hidden="true"`.
+ * (architecture.md §3) and the timer. The scene is purely decorative, so it is
+ * hidden from assistive technology with `aria-hidden="true"` (gift data is
+ * surfaced through the SessionStats panel, not the nest).
  *
- * The `.environment__nest` element is the stable anchor where the Phase 4B
- * reward system will render accumulated gifts. It is intentionally left
- * empty here — no gift rendering in Phase 3.
+ * The `.environment__nest` element is the stable anchor where accumulated
+ * gifts render. Only the newest `MAX_VISIBLE_GIFTS` are shown (design.md §16);
+ * the full collection stays persisted regardless of what the nest displays.
+ * Reduced-motion users get instant placement (usePrefersReducedMotion) instead
+ * of the short delivery animation.
  */
-export function Environment() {
+export function Environment({ rewards = [] }: EnvironmentProps) {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  // Display-only cap — never prunes the collection (design.md §16).
+  const visibleGifts = selectVisibleGifts([...rewards]);
+
   return (
     <div className="environment" aria-hidden="true">
       <svg
@@ -123,9 +165,34 @@ export function Environment() {
         </g>
       </svg>
 
-      {/* Phase 4B anchor — the nest where rewards will accumulate.
-                Intentionally empty in Phase 3; gifts render here later. */}
-      <div className="environment__nest" />
+      {/* Phase 4B — the nest where earned gifts accumulate. */}
+      <div className="environment__nest">
+        {visibleGifts.map((gift, index) => {
+          const slot = GIFT_SLOTS[index % GIFT_SLOTS.length];
+          const isNewest = index === visibleGifts.length - 1;
+          return (
+            <div
+              key={gift.id}
+              className={[
+                'environment__gift',
+                `environment__gift--${gift.rarity}`,
+                !prefersReducedMotion && isNewest ? 'environment__gift--new' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              style={{ left: `${slot.x}%`, top: `${slot.y}%` }}
+            >
+              <img
+                src={`/assets/gifts/${gift.type}.svg`}
+                alt=""
+                style={{
+                  transform: `translate(-50%, -50%) rotate(${slot.rotate}deg) scale(${slot.scale})`,
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
 
       {/* Soft window-light shimmer (slow, calm, reduced-motion aware). */}
       <div className="environment__shimmer" />

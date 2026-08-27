@@ -28,6 +28,7 @@ export interface StorageBackend {
 export const STORAGE_KEYS = {
     settings: 'settings',
     sessions: 'sessions',
+    rewards: 'rewards',
 } as const;
 
 const STORAGE_PREFIX = 'pomodoro-bird';
