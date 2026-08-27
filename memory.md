@@ -97,10 +97,30 @@ Recommended:
 
 Architecture is client-first and local-first for MVP.
 
+## Mobile/Firebase Direction (recorded 2026-08-27)
+
+A new product direction has been recorded for future phases. It does **not** change the completed MVP phases (Phase 1 and Phase 2 are unchanged), and nothing here is implemented in code yet.
+
+- **Android first**, iOS subsequent.
+- **Google Play Store** is the first distribution goal; **Apple App Store** subsequent.
+- **Firebase Authentication** provides accounts (create, sign in, sign out, password recovery).
+- **Cloud Firestore** stores synced data (settings, completed sessions, statistics, streaks) under `users/{uid}/...`.
+- **Firebase UID** identifies a user's cloud data; data is scoped to the UID.
+- **Same account on another device** retrieves the synced data (cross-device).
+- **Offline functionality is required**: the timer keeps working without a connection; data syncs when a connection returns.
+- **Timer execution remains local**: the countdown is still computed locally from timestamps.
+- **The countdown must not sync every second**; only meaningful events (session starts, session completes) sync.
+- **Firebase Spark (free) plan** is the initial backend plan; the app must be quota-conscious and may move to a paid plan later if usage justifies it.
+- **Static assets** (bird SVGs) remain application assets and are never stored in Firestore.
+- **Future mobile implementation direction:** React Native + Expo. The existing React/TypeScript MVP is **not** migrated in the MVP phases.
+
 ## Important Decisions
 
 ### Timer accuracy
 Timer correctness must be based on timestamps/elapsed time, not merely decrementing a variable every second.
+
+### Bird sleeping trigger
+The bird's `sleeping` state is **bird-layer-only**. There is no `Sleeping` `TimerState` (the engine keeps its 8 states). `BirdCompanion` uses a local `useIdleSleepTimer` hook: after 5 continuous minutes of `IDLE` (user-approved threshold), the bird falls asleep; any timer interaction that moves the bird off `idle` (START, PAUSE, RESUME, RESET, SKIP) wakes it immediately. The timer state mapping is unchanged — `timerStateToBirdState` never returns `sleeping`.
 
 ### Timer engine design
 The timer engine (`src/services/timer/timerEngine.ts`) is a pure, framework-independent module. Remaining time is always derived from timestamps: `remaining = targetEndTime - currentTime`. Every function takes `now` as an explicit argument so tests control time without mocking `Date`. All state transitions route through one pure function, `nextState`, over the 8 states in `architecture.md` §3.
@@ -114,12 +134,14 @@ Bird and environment remain separate assets.
 ### Privacy
 No account or backend is required for MVP.
 
+> **Updated Direction (recorded 2026-08-27):** A later product decision adds accounts (Firebase Auth) and cloud synchronization (Cloud Firestore) for future phases. The MVP itself still requires no account or backend; the statement above remains true for the MVP and is not deleted.
+
 ### AI boundary
 AI can assist with implementation, tests, documentation, and visual assets, but it must not silently change requirements, architecture, dependencies, privacy behavior, or timer behavior.
 
 ## Currently Working On
 
-**Current stage:** Phase 1 — Timer MVP (completed).
+**Current stage:** Phase 2 — Bird Companion (completed).
 
 ### Phase 1 — Timer MVP (completed)
 
@@ -136,8 +158,17 @@ AI can assist with implementation, tests, documentation, and visual assets, but 
 - Tests added (`tests/timer/`, 34 tests): engine (21), state machine (8), time formatting (3), existing timer types (2) — plus Phase 0 component tests (14), total **48 tests passing**.
 - Validation passed: `npx tsc -b --force`, ESLint (0 errors, 0 warnings), Vitest (48/48), `vite build`.
 
+### Phase 2 — Bird Companion (completed)
+
+- Per-state CSS motion in `src/components/bird/BirdCompanion.css` (design.md §7, §9): idle/focus slow breathing (`bird-breathe`, 6s); break playful stretch/hop (`bird-play`, 900ms, transform-only so proportions are never distorted); happy short one-shot celebration (`bird-celebrate`, 1.1s — COMPLETED is transient and held until START, so the animation runs once and settles); sleeping gentle breathing (`bird-sleep`).
+- Motion classes applied per state via `BIRD_MOTION_CLASS` in `BirdCompanion.tsx`; transitions cross-fade with `opacity`/`transform` `transition` on `.bird-companion__image` (no hard cuts).
+- Sleeping trigger implemented as a bird-layer-only hook `src/hooks/useIdleSleepTimer.ts`: after `IDLE_SLEEP_TIMEOUT_MS` (5 min, user-approved) of continuous `idle` the bird renders as `sleeping`; any change to the timer state resets it. No timerEngine / usePomodoro / Timer component changes.
+- Reduced motion: new `src/hooks/usePrefersReducedMotion.ts` reads `prefers-reduced-motion` via `matchMedia`; when reduce is active all motion classes are omitted entirely (testable), and CSS `@media (prefers-reduced-motion: reduce)` disables animation/transition as a fallback. State is never communicated by animation alone — each state uses its distinct SVG.
+- Tests extended (`tests/components/BirdCompanion.test.tsx`, 20 tests): all 5 states render (incl. `sleeping`), `data-bird-state` reflects sleeping after the mocked-clock idle timeout, bird wakes when leaving idle early, motion class per state, and reduced-motion removes every motion class. `timerStateToBirdState` coverage extended (`LONG_BREAK_PAUSED`, and verified it never returns `sleeping`). Total **56 tests passing**.
+- Validation passed: ESLint (0 errors), Vitest (56/56), `npx tsc -b --force`, `vite build`. Committed and pushed to GitHub (`main`).
+
 Next major stage:
-- **Phase 2 — Bird animation:** connect bird states to timer transitions with animated behavior.
+- **Phase 3 — Environment:** implement the cozy workspace environment behind the bird.
 
 ## Future Direction
 
@@ -149,6 +180,8 @@ After MVP stability:
 - Better statistics.
 - Optional PWA/offline features.
 - Cloud synchronization only if justified.
+
+> **Updated Direction (recorded 2026-08-27):** cloud synchronization (and accounts) are now approved requirements for future phases, per the Mobile/Firebase Direction above. The original "only if justified" line is kept for historical context but is superseded by the new direction.
 
 ## Memory Maintenance Rules
 

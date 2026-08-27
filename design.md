@@ -190,6 +190,14 @@ The app must remain usable at:
 
 The timer should never become too small to read.
 
+### Mobile-specific requirements (future mobile phase, Android first / iOS second)
+
+- **Touch-friendly controls:** primary controls must be comfortably tappable (recommended minimum touch-target size) and reachable with a thumb.
+- **Android/iOS screen sizes:** the design must hold up across common Android and iOS screen sizes and aspect ratios, from small phones to large tablets.
+- **Safe-area support:** respect notches, rounded corners, and system UI insets (safe areas) on both Android and iOS so content is never clipped or hidden.
+
+The visual identity (Calm, Cozy, Friendly, Modern, Focused) and the bird as the visual companion are preserved on mobile — mobile does not change the product personality.
+
 ## 12. Accessibility
 
 Target WCAG-friendly practices:
@@ -209,6 +217,21 @@ Example:
 > “We couldn't save your settings. Your timer will keep working, but changes may not persist.”
 
 Avoid technical stack traces in the interface.
+
+### Additional states to design (future account/mobile phases)
+
+Recorded for future phases — not part of the MVP UI.
+
+- **Authentication screens:** calm, simple sign-in/sign-up with clear feedback.
+- **Loading states:** visible, non-blocking loading indicators during async operations.
+- **Offline state:** the timer keeps working offline; show a calm, non-alarming offline indicator and explain that data will sync when the connection returns.
+- **Syncing state:** a subtle indicator while data syncs to the cloud.
+- **Authentication errors:** friendly messages for failed sign-in, sign-up, and password recovery (never raw exceptions).
+- **Network errors:** friendly messages that do not interrupt the timer.
+- **Empty session history:** a calm empty state (e.g., “No sessions yet”) rather than a blank screen.
+- **First-time user state:** gentle onboarding that introduces the timer and the bird without requiring an account.
+
+All of these states keep the product voice short, encouraging, and calm (see §15 Product Personality), and the bird remains the visual companion throughout.
 
 ## 14. Design Asset Rules
 

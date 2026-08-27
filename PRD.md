@@ -8,6 +8,14 @@
 
 Pomodoro Bird helps users work in focused intervals and take intentional breaks. The bird is the product's visual companion: it changes state during focus, breaks, completion, and rest.
 
+### Platforms
+
+The current MVP is a **web application**. Target platform direction (recorded for future phases — not implemented in the MVP):
+
+- **Mobile first:** Android is the first mobile target; iOS follows second.
+- **Distribution:** Google Play Store is the first distribution goal; the Apple App Store follows.
+- **Identity preserved on every platform:** the app remains Pomodoro Bird, the bird remains the visual companion, and the timer remains the primary product function.
+
 ## 2. Goal and Core Purpose
 
 The primary goal is to make focused work easier to start and sustain without adding unnecessary complexity.
@@ -112,6 +120,33 @@ The primary goal is to make focused work easier to start and sustain without add
 - Additional companion characters.
 - Advanced analytics.
 - Carefully designed social features.
+
+The following feature requirements are recorded here as the future **mobile/Firebase direction** (not part of the MVP). They are documented so the requirements exist in one place; they are not yet approved for implementation timing beyond what P2 — Future implies.
+
+#### Account (future)
+- Create an account.
+- Sign in.
+- Sign out.
+- Password recovery.
+
+#### Cloud Sync (future)
+- Sync settings.
+- Sync completed sessions.
+- Sync statistics.
+- Sync streaks.
+
+#### Cross-device (future)
+- The same account works across all supported devices (Android, iOS, web where applicable).
+- Signing into the same account on another device retrieves the synced data.
+
+#### Offline (future)
+- The timer continues to work without an internet connection.
+- Completed sessions are kept locally and sync when a connection returns.
+
+#### Data (future)
+- Cloud-stored data is scoped to the user's account.
+- A future data export/import feature is possible.
+- The export/import note: a future export/import feature does **not** replace cloud synchronization via Firebase; both may coexist. **Do not implement export/import in the MVP.**
 
 ## 6. Non-Goals
 

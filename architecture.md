@@ -158,6 +158,13 @@ Renders the visual scene independently from the bird. The environment should be 
 ### Storage Service
 Provides a small abstraction over browser persistence. Components should not directly manipulate localStorage keys.
 
+### Settings Panel
+Owns the user-facing form for custom durations and autoStart preferences.
+Reads/writes through the useSettings hook, never directly through
+storageService. Validates input before it reaches TimerSettings (reject
+negative or zero durations). Implemented in Phase 4, alongside persistence,
+since settings have no effect until they can be saved and reloaded.
+
 ## 4. Data Flow
 
 1. User presses Start.
@@ -186,6 +193,38 @@ Do not persist:
 - Sensitive user data.
 - Raw browsing/activity data unrelated to the timer.
 
+### 5.1 Future mobile/Firebase storage direction (not implemented in the MVP)
+
+Recorded for future phases. **Do not implement in the MVP.**
+
+#### Firebase service split
+- **Firebase Auth** — handles identity/authentication (create account, sign in, sign out, password recovery).
+- **Cloud Firestore** — stores user settings, completed sessions, statistics, streaks, and any other explicitly approved synced data.
+- **Device-local/offline storage** — caches data, holds temporary state, supports offline operation, and acts as Firebase's offline persistence layer. It is **not** the source of truth for synced user data.
+
+#### Firestore structure
+
+```text
+users/{uid}/
+  profile
+  settings
+  statistics
+  sessions/{sessionId}
+```
+
+- The schema is a starting point and may be refined later.
+- All cloud data is scoped to the user's UID (`users/{uid}/...`).
+
+#### Static assets are NOT user data
+- Bird SVGs (`bird-idle.svg`, `bird-focus.svg`, `bird-break.svg`, `bird-happy.svg`, `bird-sleeping.svg`) are application assets, not user data.
+- They must **not** be stored in Firestore.
+- They remain application assets shipped with the app, exactly as in the MVP.
+
+#### Firebase pricing plan
+- Initial backend plan: **Firebase Spark (free) plan**.
+- The app must be quota-conscious: avoid unnecessary reads/writes, repeated listeners, large documents, and per-second sync.
+- The project may move to a paid Firebase plan later if usage justifies it.
+
 ## 6. Technology Stack
 
 Recommended stack:
@@ -203,6 +242,18 @@ Recommended stack:
 - **Prettier** — formatting.
 
 A state-management library should only be introduced if application state becomes complex enough to justify it.
+
+### 6.1 Future mobile platform direction (not implemented in the MVP)
+
+Target platforms for the mobile phase:
+- **Android** first.
+- **iOS** second.
+
+Preferred mobile implementation direction:
+- **React Native + Expo** — preferred, because the project is already React/TypeScript-based, which minimizes context switching and allows shared component/state concepts to be reused.
+- **Do not migrate** the existing MVP to React Native/Expo in this task or in the MVP phases. This is a future-phase direction only.
+
+The mobile app must preserve the Pomodoro Bird identity: the timer remains the primary interaction, and the bird remains the visual companion.
 
 ## 7. Architectural Rules
 

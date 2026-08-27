@@ -14,6 +14,13 @@
 - React Testing Library for component tests.
 - ESLint and Prettier.
 
+Approved future technologies (future phases only — **do not add to the MVP**):
+- Firebase Auth (accounts/authentication).
+- Cloud Firestore (synced user data).
+- React Native + Expo (mobile platform, Android first, iOS second).
+
+> These are recorded now so the direction is explicit, but they must **not** be installed, configured, or referenced in MVP code.
+
 ### Approved patterns
 - Component-based architecture.
 - Separation of UI, state, business logic, services, and utilities.
@@ -54,6 +61,8 @@ Animations must never make the timer harder to read or distract users during foc
 
 ### Avoid unnecessary backend infrastructure
 The MVP does not need a backend or database unless a later requirement explicitly introduces accounts/cloud synchronization.
+
+**Updated Direction:** A later requirement now explicitly introduces accounts and cloud synchronization (see PRD.md P2 — Future and phase.md Phase 8). This means a backend (Firebase Auth + Cloud Firestore) is approved **for those future phases only**. The MVP remains backend-free and local-first.
 
 ### Avoid collecting unnecessary personal data
 The product should remain usable without an account.
@@ -162,6 +171,30 @@ chore: update tooling
 - Do not collect unnecessary personal information.
 - Do not add third-party trackers without explicit approval.
 - Validate all persisted data before use.
+
+### Firebase security rules (future phases, when Firebase is introduced)
+- **Firebase Auth** is the identity/authentication mechanism for authenticated data.
+- **Firestore Security Rules** enforce user-level authorization at the database layer.
+- A user can only read and write their **own private data**.
+- **Unauthenticated users are blocked** from accessing authenticated data.
+- **Admin SDK credentials / service-account keys must never** be included in the app or in client code.
+- Client-side checks alone are **not** sufficient for security; authorization must be enforced by Firestore Security Rules.
+- Conceptually, rules check `request.auth.uid == requestedUserUid` (Firestore scopes data under `users/{uid}/...`).
+
+### Firestore write optimization (future phases, when Firebase is introduced)
+- The timer **MUST NOT** write the countdown to Firestore every second (the `25:00` → `24:59` → `24:58` per-second write pattern is **prohibited**).
+- The timer runs locally using timestamp/elapsed-time calculations (unchanged from the MVP engine).
+- Only **meaningful events** are synced to Firestore:
+  - Session starts.
+  - Session completes.
+
+### Firebase Spark plan quota-consciousness (future phases, when Firebase is introduced)
+- The initial backend plan is the **Firebase Spark (free) plan**, which has strict quotas.
+- Avoid unnecessary reads and writes.
+- Avoid repeated listeners.
+- Avoid large documents.
+- Avoid per-second sync.
+- The project may move to a paid Firebase plan later if usage justifies it.
 
 ### Performance
 - Keep the main timer lightweight.

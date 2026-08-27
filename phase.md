@@ -76,14 +76,20 @@ Tasks:
 Give users lightweight progress feedback.
 
 Tasks:
-- Store settings.
+- Build SettingsPanel UI allowing the user to set custom focus, short-break,
+  and long-break durations, sessions-before-long-break, and autoStart flags.
+- Wire SettingsPanel to the existing TimerSettings type and usePomodoro hook
+  (no changes to timerEngine.ts required — it already accepts TimerSettings).
+- Store settings (persist SettingsPanel values via storageService).
 - Store completed sessions.
 - Calculate daily totals.
 - Implement streak logic.
 - Add session counter/history.
-- Validate persisted data.
+- Validate persisted data (reject negative/zero durations per rules.md
+  "Invalid settings"; fall back to DEFAULT_TIMER_SETTINGS on corrupt data).
 
-**Exit criteria:** Reloading the app preserves valid settings and progress.
+**Exit criteria:** User can set custom session durations through the UI,
+and reloading the app preserves valid settings and progress.
 
 ---
 
@@ -155,3 +161,19 @@ Possible features:
 - PWA/offline improvements.
 - Cloud synchronization.
 - Accounts, only if product requirements justify them.
+
+### Mobile/Firebase additions (future roadmap)
+
+Recorded requirements for future phases. These are **additions to the roadmap, not changes to completed phases** — Phase 2 (Bird Companion) and all earlier completed work are unaffected. **Do not implement any of these in the MVP.**
+
+- **Mobile implementation** via React Native + Expo (Android first, iOS second).
+- **Firebase Authentication** — accounts: create, sign in, sign out, password recovery.
+- **Cloud Firestore** — user data storage (settings, completed sessions, statistics, streaks), scoped under `users/{uid}/...`.
+- **Cross-device sync** — the same account on another device retrieves synced data.
+- **Offline sync** — the timer continues offline; data syncs when a connection returns.
+- **Android testing** — test on Android devices/emulators.
+- **Google Play Store prep** — prepare the Android app for the Google Play Store (first distribution goal).
+- **iOS testing** — test on iOS devices/simulators.
+- **Apple App Store prep** — prepare the iOS app for the Apple App Store (subsequent distribution goal).
+
+> **Updated Direction:** The Phase 8 line "Accounts, only if product requirements justify them" is now superseded by this explicit mobile/Firebase direction: accounts and cloud sync are approved requirements for future phases.
