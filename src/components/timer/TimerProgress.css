@@ -1,0 +1,21 @@
+/* Timer progress ring — subtle, calm, never color-dependent. */
+
+.timer-progress {
+    display: flex;
+    justify-content: center;
+}
+
+.timer-progress__ring {
+    transform: rotate(-90deg);
+    width: clamp(7rem, 30vw, 11rem);
+    height: auto;
+}
+
+.timer-progress__track {
+    stroke: var(--color-border);
+}
+
+.timer-progress__bar {
+    stroke: var(--color-primary-dark);
+    transition: stroke-dashoffset var(--transition-base);
+}

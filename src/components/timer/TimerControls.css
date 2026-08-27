@@ -1,0 +1,57 @@
+/* Timer controls — primary action visually distinct from secondary actions. */
+
+.timer-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.timer-controls__primary,
+.timer-controls__secondary {
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.timer-controls__primary {
+    min-width: 9rem;
+    padding: var(--space-3) var(--space-6);
+    background-color: var(--color-primary-dark);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+}
+
+.timer-controls__primary:hover {
+    background-color: var(--color-primary);
+}
+
+.timer-controls__primary:active {
+    transform: translateY(1px);
+}
+
+.timer-controls__secondary {
+    min-width: 6rem;
+    padding: var(--space-3) var(--space-5);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.timer-controls__secondary:hover:not(:disabled) {
+    border-color: var(--color-primary-dark);
+    color: var(--color-primary-dark);
+}
+
+.timer-controls__secondary:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.timer-controls__secondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

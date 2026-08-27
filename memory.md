@@ -102,6 +102,12 @@ Architecture is client-first and local-first for MVP.
 ### Timer accuracy
 Timer correctness must be based on timestamps/elapsed time, not merely decrementing a variable every second.
 
+### Timer engine design
+The timer engine (`src/services/timer/timerEngine.ts`) is a pure, framework-independent module. Remaining time is always derived from timestamps: `remaining = targetEndTime - currentTime`. Every function takes `now` as an explicit argument so tests control time without mocking `Date`. All state transitions route through one pure function, `nextState`, over the 8 states in `architecture.md` §3.
+
+### Focus-count contract
+`completedFocusInCycle` in the transition context is the **pre-action** count. A focus session ending (via skip or natural completion) counts as `+1`; a long break ending resets it to `0`; skipping a break leaves it unchanged. Break-vs-long-break decisions use `completedFocusInCycle + 1 >= sessionsBeforeLongBreak`. This contract is documented in the engine and enforced by tests.
+
 ### Asset separation
 Bird and environment remain separate assets.
 
@@ -113,29 +119,25 @@ AI can assist with implementation, tests, documentation, and visual assets, but 
 
 ## Currently Working On
 
-**Current stage:** Phase 0 — Foundation (completed).
+**Current stage:** Phase 1 — Timer MVP (completed).
 
-Completed:
-- Product concept selected.
-- Bird companion selected.
-- Bird SVG states created.
-- Environment strategy selected.
-- Project documentation established.
-- React + TypeScript + Vite project initialized (`package.json`, tsconfigs, Vite config).
-- ESLint and Prettier configured.
-- Folder structure created per `architecture.md`.
-- Approved bird SVGs moved from project root to `public/assets/birds/`.
-- Design tokens created in `src/styles/design-tokens.css` using the design.md starting palette.
-- Base app shell created (`App.tsx`, `main.tsx`, `App.css`, globals).
-- Bird component foundation created (`BirdCompanion.tsx`, `birdStates.ts`) with the five states mapped to approved SVG paths.
-- Environment component foundation created (`Environment.tsx`) — replaceable placeholder backdrop, bird kept separate.
-- Timer architecture preparation added (`src/types/timer.ts`): session modes, timer states, settings, active session shape, and helpers — ready for the Phase 1 timestamp-based engine.
-- Tests added: bird state mapping, BirdCompanion rendering, Environment rendering, timer type helpers (16 tests, all passing).
-- Validation passed: `tsc` strict, ESLint, Vitest (16/16), `vite build`, dev server starts.
+### Phase 1 — Timer MVP (completed)
+
+- Timer engine implemented (`src/services/timer/timerEngine.ts`): pure, framework-independent, timestamp-based countdown (`targetEndTime - now`), explicit `now` argument for testable time, no React imports, no new dependencies.
+- Single transition function `nextState(current, action, context)` over the full 8-state machine from `architecture.md` §3 (IDLE, FOCUSING, FOCUS_PAUSED, SHORT_BREAK, SHORT_BREAK_PAUSED, LONG_BREAK, LONG_BREAK_PAUSED, COMPLETED). Sessions transition through COMPLETED before the next session; `autoStartBreaks`/`autoStartFocus` respected.
+- Start/pause/resume/reset/skip actions with pause freezing remaining time and resume recomputing `targetEndTime` without drift.
+- `SESSION_COMPLETED` engine events emitted with payload `{ mode, completedFocusInCycle, nextMode }` (consumed by later phases; hook intentionally ignores them for now).
+- `usePomodoro` hook (`src/hooks/usePomodoro.ts`) wraps the engine: 500 ms tick, lazy-ref engine init, stable interval refs, throttled-tab recovery, snapshot updates only when state actually changes.
+- Timer UI added (`src/components/timer/`): `Timer.tsx` (mm:ss + calm session label, `role="timer"`, tabular-nums), `TimerControls.tsx` (Start/Pause/Resume, Reset, Skip — accessible, keyboard operable, disabled states), `TimerProgress.tsx` (SVG ring from remaining/duration with `role="progressbar"`, not color-only). Separate CSS per component.
+- App wired (`App.tsx`): Phase 0 placeholder removed; real timer panel driven by `usePomodoro`; bird state derived via the existing `timerStateToBirdState()` (no duplicated mapping).
+- Minimal deviation: `birdStates.ts` `timerStateToBirdState` extended to accept `LONG_BREAK_PAUSED` (Phase 0 omitted it; the mapping now covers all 8 timer states). No other bird/environment code touched.
+- Settings (minimum viable): in-memory defaults in `src/types/timer.ts` (`DEFAULT_TIMER_SETTINGS`: 25/5/15 min, 4 sessions before long break, auto-start off); engine and hook accept a `TimerSettings` object.
+- Types extended only where genuinely needed: `SessionCompletionPayload`, `TimerEngineEvent`, `DEFAULT_TIMER_SETTINGS`; `isBreakState` fixed to include `LONG_BREAK_PAUSED`. All existing types unchanged.
+- Tests added (`tests/timer/`, 34 tests): engine (21), state machine (8), time formatting (3), existing timer types (2) — plus Phase 0 component tests (14), total **48 tests passing**.
+- Validation passed: `npx tsc -b --force`, ESLint (0 errors, 0 warnings), Vitest (48/48), `vite build`.
 
 Next major stage:
-- **Phase 1 — Timer MVP:** implement the timer engine, state machine, and timestamp-based countdown.
-- Phase 2 — connect the bird to timer states.
+- **Phase 2 — Bird animation:** connect bird states to timer transitions with animated behavior.
 
 ## Future Direction
 

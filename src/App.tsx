@@ -1,19 +1,23 @@
-import { useState } from 'react';
 import { BirdCompanion } from './components/bird/BirdCompanion';
-import type { BirdState } from './components/bird/birdStates';
+import { timerStateToBirdState } from './components/bird/birdStates';
 import { Environment } from './components/environment/Environment';
+import { Timer } from './components/timer/Timer';
+import { TimerControls } from './components/timer/TimerControls';
+import { TimerProgress } from './components/timer/TimerProgress';
+import { usePomodoro } from './hooks/usePomodoro';
 import './App.css';
 
 /**
- * App — application shell for Phase 0.
+ * App — application shell.
  *
- * Composes the base layout: header, environment + bird scene, and a
- * placeholder timer area. The real timer arrives in Phase 1 and will
- * drive the bird state through application state (Phase 2).
+ * Composes the environment + bird scene and the Phase 1 timer (display,
+ * progress, controls) driven by the `usePomodoro` hook. The bird state is
+ * derived from the timer state through the single shared mapping.
  */
 export function App() {
-    // Phase 0 placeholder: the timer controller will supply this later.
-    const [birdState] = useState<BirdState>('idle');
+    const { state, mode, remainingMs, durationMs, start, pause, resume, reset, skip } = usePomodoro();
+
+    const birdState = timerStateToBirdState(state);
 
     return (
         <div className="app">
@@ -29,12 +33,22 @@ export function App() {
                     </div>
                 </div>
 
-                <section className="timer-placeholder" aria-label="Timer">
-                    <p className="timer-placeholder__time" aria-hidden="true">
-                        25:00
-                    </p>
-                    <p className="timer-placeholder__label">Focus time</p>
-                    <p className="timer-placeholder__note">Timer arrives in Phase 1.</p>
+                <section className="timer-panel" aria-label="Timer">
+                    <Timer state={state} mode={mode} remainingMs={remainingMs} />
+                    <TimerProgress
+                        state={state}
+                        mode={mode}
+                        remainingMs={remainingMs}
+                        durationMs={durationMs}
+                    />
+                    <TimerControls
+                        state={state}
+                        onStart={start}
+                        onPause={pause}
+                        onResume={resume}
+                        onReset={reset}
+                        onSkip={skip}
+                    />
                 </section>
             </main>
 

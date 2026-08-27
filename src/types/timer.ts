@@ -54,6 +54,39 @@ export interface ActiveSession {
     completedFocusInCycle: number;
 }
 
+/** Default in-memory settings used by the MVP until the Phase 4 settings UI. */
+export const DEFAULT_TIMER_SETTINGS: TimerSettings = {
+    focusDuration: 25 * 60,
+    shortBreakDuration: 5 * 60,
+    longBreakDuration: 15 * 60,
+    sessionsBeforeLongBreak: 4,
+    autoStartBreaks: false,
+    autoStartFocus: false,
+};
+
+/**
+ * Payload emitted when a session ends (architecture.md §4 — completion event).
+ *
+ * `nextMode` is the session that runs next: either started automatically, or
+ * pending while the timer sits in COMPLETED waiting for the user. The count is
+ * the value that takes effect for the next session (already incremented for a
+ * completed focus session, or reset to 0 after a long break).
+ */
+export interface SessionCompletionPayload {
+    /** The session that just finished. */
+    mode: SessionMode;
+    /** Completed focus sessions in the cycle that applies to the next session. */
+    completedFocusInCycle: number;
+    /** The session that comes next in the cycle. */
+    nextMode: SessionMode;
+}
+
+/**
+ * Events the timer engine emits so the UI/store can react without coupling the
+ * engine to presentation (architecture.md §4 step 6).
+ */
+export type TimerEngineEvent = { type: 'SESSION_COMPLETED'; payload: SessionCompletionPayload };
+
 /**
  * Convenience helpers for the timer layer (Phase 1 will use these).
  */
@@ -72,7 +105,12 @@ export function durationForMode(mode: SessionMode, settings: TimerSettings): num
 
 /** Whether a timer state represents a break. */
 export function isBreakState(state: TimerState): boolean {
-    return state === 'SHORT_BREAK' || state === 'SHORT_BREAK_PAUSED' || state === 'LONG_BREAK';
+    return (
+        state === 'SHORT_BREAK' ||
+        state === 'SHORT_BREAK_PAUSED' ||
+        state === 'LONG_BREAK' ||
+        state === 'LONG_BREAK_PAUSED'
+    );
 }
 
 /** Whether a timer state represents a focus phase. */

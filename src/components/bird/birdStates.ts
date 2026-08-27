@@ -60,7 +60,15 @@ export const BIRD_STATE_IDS: BirdState[] = ['idle', 'focus', 'break', 'happy', '
  * COMPLETED maps to `happy`; sleeping is reserved for a future rest state.
  */
 export function timerStateToBirdState(
-    timerState: 'IDLE' | 'FOCUSING' | 'FOCUS_PAUSED' | 'SHORT_BREAK' | 'SHORT_BREAK_PAUSED' | 'LONG_BREAK' | 'COMPLETED',
+    timerState:
+        | 'IDLE'
+        | 'FOCUSING'
+        | 'FOCUS_PAUSED'
+        | 'SHORT_BREAK'
+        | 'SHORT_BREAK_PAUSED'
+        | 'LONG_BREAK'
+        | 'LONG_BREAK_PAUSED'
+        | 'COMPLETED',
 ): BirdState {
     switch (timerState) {
         case 'FOCUSING':
@@ -69,6 +77,7 @@ export function timerStateToBirdState(
         case 'SHORT_BREAK':
         case 'SHORT_BREAK_PAUSED':
         case 'LONG_BREAK':
+        case 'LONG_BREAK_PAUSED':
             return 'break';
         case 'COMPLETED':
             return 'happy';
