@@ -317,5 +317,16 @@ Recorded requirements for future phases. These are **additions to the roadmap, n
 - **Google Play Store prep** — prepare the Android app for the Google Play Store (first distribution goal).
 - **iOS testing** — test on iOS devices/simulators.
 - **Apple App Store prep** — prepare the iOS app for the Apple App Store (subsequent distribution goal).
+- **Mobile design system** — apply the Cozy Minimalism visual language
+  documented in design.md §17 (source: Google Stitch export in
+  docs/design-reference/mobile-stitch-export/) to the React Native/Expo
+  app. The bird and environment shown inside the timer frame MUST be the
+  existing live, state-driven BirdCompanion + Environment system ported
+  to mobile — never a static placeholder image, regardless of what the
+  mockup screens show.
+- **Mobile navigation** — implement the 5-tab bottom navigation (Home,
+  Focus, Nest, Stats, Settings) described in design.md §17 as its own
+  scoped task; this is new relative to the web app's single-screen layout
+  (see architecture.md §6.1).
 
 > **Updated Direction:** The Phase 8 line "Accounts, only if product requirements justify them" is now superseded by this explicit mobile/Firebase direction: accounts and cloud sync are approved requirements for future phases.

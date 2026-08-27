@@ -362,3 +362,32 @@ Keep audio controls compact and calm, for example:
 ### Audio transitions
 Use short, gentle transitions rather than abrupt starts/stops. Background
 music fades in and out instead of cutting.
+
+## 17. Mobile Design System (Android/iOS Reference)
+
+Source: docs/design-reference/mobile-stitch-export/pomodoro_bird/DESIGN.md
+(Google Stitch export, "Cozy Minimalism" / "Focus Sanctuary" concept).
+
+This is the intended visual direction for the future React Native/Expo
+mobile app (per phase.md's Mobile/Firebase roadmap). It does NOT apply to
+or replace the existing web app's design-tokens.css / design.md sections
+1-16, which remain as-is for web.
+
+Key elements to carry forward when the mobile phase begins:
+- Palette: Sage green (primary/Work), Terracotta (secondary/Break),
+  Slate Blue (tertiary), warm Cream surface, Dark Cocoa text - full token
+  values in the source DESIGN.md.
+- Typography: Plus Jakarta Sans; timer-display at 80px/700 weight as the
+  visual hero.
+- Shape: high-radius curves throughout (rounded-lg 16px for buttons/
+  cards, rounded-xl 24px for the timer/nest container); no sharp corners.
+- Elevation: soft ambient shadows only (8% opacity, 12px blur, 4px
+  offset) - no heavy/realistic shadows.
+- Timer: circular progress ring, 12px stroke, rounded caps, color
+  switches Sage (Work) / Terracotta (Break).
+- Bird placement: bird + environment rendered inside the circular frame
+  above the timer, using the LIVE animated bird/environment system
+  described above - never a static image.
+- Navigation: bottom tab bar with 5 tabs - Home, Focus, Nest, Stats,
+  Settings. This introduces multi-screen navigation, which the current
+  web app does not have; flag this for architecture.md (see Addition 2).

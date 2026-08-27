@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pomodoro Bird - Stats</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c3c8bf",
+                        "on-secondary-container": "#783f2f",
+                        "on-primary-container": "#243d24",
+                        "secondary-container": "#fdad98",
+                        "secondary-fixed-dim": "#ffb5a1",
+                        "tertiary-container": "#91a4ab",
+                        "surface-container": "#f1eee5",
+                        "surface-container-low": "#f7f3ea",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#8ba888",
+                        "primary-fixed-dim": "#b0cfad",
+                        "error-container": "#ffdad6",
+                        "secondary": "#8b4e3d",
+                        "inverse-on-surface": "#f4f0e8",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#334d33",
+                        "surface-bright": "#fdf9f0",
+                        "on-secondary-fixed-variant": "#6f3728",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b0cfad",
+                        "inverse-surface": "#31312b",
+                        "on-tertiary-fixed-variant": "#384a50",
+                        "background": "#fdf9f0",
+                        "primary": "#4a6549",
+                        "primary-fixed": "#ccebc7",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#380d03",
+                        "surface-dim": "#dddad1",
+                        "on-background": "#1c1c17",
+                        "tertiary-fixed-dim": "#b6cad1",
+                        "surface-variant": "#e6e2d9",
+                        "surface-container-highest": "#e6e2d9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1c1c17",
+                        "surface": "#fdf9f0",
+                        "surface-tint": "#4a6549",
+                        "tertiary-fixed": "#d2e6ed",
+                        "secondary-fixed": "#ffdbd1",
+                        "outline": "#737970",
+                        "surface-container-high": "#ece8df",
+                        "on-primary-fixed": "#07200b",
+                        "on-tertiary-fixed": "#0c1e23",
+                        "on-tertiary-container": "#283a40",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#4f6168",
+                        "on-surface-variant": "#434841"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "space-xs": "4px",
+                        "margin-mobile": "24px",
+                        "space-xl": "40px",
+                        "space-lg": "24px",
+                        "space-md": "16px",
+                        "space-sm": "8px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "timer-display": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "timer-display": ["80px", { "lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["13px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 12px rgba(28, 28, 23, 0.08);
+        }
+        .sunken-track {
+            background-color: rgba(79, 97, 104, 0.1);
+        }
+        .stats-card-border {
+            border: 1px solid rgba(139, 78, 61, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-[100px]">
+<!-- TopAppBar -->
+<header class="w-full top-0 px-space-lg bg-surface dark:bg-surface flex justify-between items-center h-16 w-full px-margin-mobile sticky z-40">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">music_note</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">
+            Pomodoro Bird
+        </h1>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 active:scale-95 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="px-space-lg max-w-4xl mx-auto pt-space-lg pb-space-xl flex flex-col gap-space-xl">
+<!-- Header Section -->
+<section class="flex flex-col gap-space-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-background">Your Focus Journey</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">A calm look back at your recent dedication.</p>
+</section>
+<!-- Stats Overview Cards (Bento Grid) -->
+<section class="grid grid-cols-2 md:grid-cols-3 gap-space-md">
+<div class="bg-surface-container rounded-xl p-space-md soft-shadow stats-card-border flex flex-col items-center justify-center gap-space-sm text-center">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">timer</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Focus Time</span>
+<span class="font-headline-md text-headline-md text-on-background">24h 15m</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-space-md soft-shadow stats-card-border flex flex-col items-center justify-center gap-space-sm text-center">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Current Streak</span>
+<span class="font-headline-md text-headline-md text-on-background">5 Days</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-space-md soft-shadow stats-card-border flex flex-col items-center justify-center gap-space-sm text-center col-span-2 md:col-span-1">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">downloading</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Gifts Collected</span>
+<span class="font-headline-md text-headline-md text-on-background">12 Items</span>
+</div>
+</div>
+</section>
+<!-- Weekly Chart Section -->
+<section class="bg-surface-container rounded-xl p-space-lg soft-shadow flex flex-col gap-space-lg relative overflow-hidden">
+<!-- Decorative Leaf -->
+<div class="absolute -top-4 -right-4 text-primary opacity-20 pointer-events-none transform rotate-45">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div class="flex justify-between items-center">
+<h3 class="font-body-lg text-body-lg font-bold text-on-background">This Week</h3>
+<span class="font-label-sm text-label-sm text-primary px-3 py-1 bg-primary-container/30 rounded-full">Avg: 3h 20m</span>
+</div>
+<!-- Simple Bar Chart -->
+<div class="flex items-end justify-between h-48 gap-2 pt-4 relative">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="w-full h-px bg-outline-variant/30"></div>
+<div class="w-full h-px bg-outline-variant/30"></div>
+<div class="w-full h-px bg-outline-variant/30"></div>
+<div class="w-full h-px bg-outline-variant/30"></div>
+</div>
+<!-- Bars -->
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-tertiary rounded-t-lg transition-all duration-500 ease-out h-[40%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mon</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-primary rounded-t-lg transition-all duration-500 ease-out h-[65%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tue</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-primary rounded-t-lg transition-all duration-500 ease-out h-[80%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Wed</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-tertiary rounded-t-lg transition-all duration-500 ease-out h-[30%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-primary rounded-t-lg transition-all duration-500 ease-out h-[90%] hover:opacity-80 relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-2 h-2 bg-secondary rounded-full"></div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold text-primary">Fri</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-tertiary/50 rounded-t-lg transition-all duration-500 ease-out h-[10%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Sat</span>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 z-10">
+<div class="w-full max-w-[40px] sunken-track rounded-t-lg h-full flex items-end">
+<div class="w-full bg-tertiary/50 rounded-t-lg transition-all duration-500 ease-out h-[0%] hover:opacity-80"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Sun</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-safe bg-surface-container-low/80 dark:bg-surface-container-low/80 backdrop-blur-md shadow-sm border-t border-outline-variant/20 md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 px-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-[10px] mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 px-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">timer</span>
+<span class="font-label-sm text-[10px] mt-1">Focus</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 px-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">downloading</span>
+<span class="font-label-sm text-[10px] mt-1">Nest</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-full px-4 py-1 active:scale-98 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-sm text-[10px] mt-1">Stats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 px-3 rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings_heart</span>
+<span class="font-label-sm text-[10px] mt-1">Settings</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pomodoro Bird - Focus Complete</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c3c8bf",
+                        "on-secondary-container": "#783f2f",
+                        "on-primary-container": "#243d24",
+                        "secondary-container": "#fdad98",
+                        "secondary-fixed-dim": "#ffb5a1",
+                        "tertiary-container": "#91a4ab",
+                        "surface-container": "#f1eee5",
+                        "surface-container-low": "#f7f3ea",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#8ba888",
+                        "primary-fixed-dim": "#b0cfad",
+                        "error-container": "#ffdad6",
+                        "secondary": "#8b4e3d",
+                        "inverse-on-surface": "#f4f0e8",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#334d33",
+                        "surface-bright": "#fdf9f0",
+                        "on-secondary-fixed-variant": "#6f3728",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b0cfad",
+                        "inverse-surface": "#31312b",
+                        "on-tertiary-fixed-variant": "#384a50",
+                        "background": "#fdf9f0",
+                        "primary": "#4a6549",
+                        "primary-fixed": "#ccebc7",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#380d03",
+                        "surface-dim": "#dddad1",
+                        "on-background": "#1c1c17",
+                        "tertiary-fixed-dim": "#b6cad1",
+                        "surface-variant": "#e6e2d9",
+                        "surface-container-highest": "#e6e2d9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1c1c17",
+                        "surface": "#fdf9f0",
+                        "surface-tint": "#4a6549",
+                        "tertiary-fixed": "#d2e6ed",
+                        "secondary-fixed": "#ffdbd1",
+                        "outline": "#737970",
+                        "surface-container-high": "#ece8df",
+                        "on-primary-fixed": "#07200b",
+                        "on-tertiary-fixed": "#0c1e23",
+                        "on-tertiary-container": "#283a40",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#4f6168",
+                        "on-surface-variant": "#434841"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "space-xs": "4px",
+                        "margin-mobile": "24px",
+                        "space-xl": "40px",
+                        "space-lg": "24px",
+                        "space-md": "16px",
+                        "space-sm": "8px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "timer-display": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "timer-display": ["80px", { "lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["13px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pulse-glow {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(139, 168, 136, 0.4)); }
+            50% { filter: drop-shadow(0 0 16px rgba(139, 168, 136, 0.8)); }
+        }
+        .float-up {
+            animation: float-up 4s ease-out forwards;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(20px); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-40px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Top Navigation (Suppressed for transactional focus complete screen, but minimal brand anchor kept) -->
+<header class="absolute top-0 w-full px-margin-mobile h-16 flex justify-between items-center z-10 bg-surface">
+<button aria-label="Music" class="text-primary hover:opacity-80 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="music_note" data-weight="fill" style="font-variation-settings: 'FILL' 1;">music_note</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Pomodoro Bird</h1>
+<button aria-label="Settings" class="text-primary hover:opacity-80 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-md mx-auto px-margin-mobile flex flex-col items-center justify-center flex-grow z-10 space-y-space-xl">
+<!-- Timer Display (Completed) -->
+<div class="relative w-64 h-64 flex items-center justify-center rounded-full">
+<svg class="absolute inset-0 w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="stroke-surface-variant" cx="50" cy="50" fill="none" r="44" stroke-width="12"></circle>
+<circle class="stroke-primary-container" cx="50" cy="50" fill="none" r="44" stroke-dasharray="276" stroke-dashoffset="0" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="text-center z-10">
+<div class="font-timer-display text-timer-display text-primary">00:00</div>
+</div>
+<!-- Soft glowing particles behind bird -->
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 bg-primary-container/20 rounded-full blur-xl animate-pulse"></div>
+<!-- Bird Illustration Container (Absolute positioned slightly above timer) -->
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 flex items-center justify-center pulse-glow z-20">
+<!-- Using placeholder for cozy 2D illustration -->
+<img class="w-full h-full object-contain drop-shadow-sm" data-alt="A cute, cozy 2D minimalist illustration of a happy little round bird holding a tiny glowing blue feather in its beak. The bird is styled in flat, soft shapes with gentle sage and cream tones, sitting on a subtle branch. Soft ambient light style, no harsh shadows. Focus Sanctuary aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2aJhheexIAbf2aQvZ3ITb_c-G6R3rir2lShpquPt3ogjtWRup16UfH6NReUsCjFT8_db8lgqzNk6BNTRWUTeUDTZhXrZBKXCMvhvPY05o-_xCLRi__pU8NAHoq7plGM62kiRVEVKuxCS3Ab6betVwzwodxX3LK3e1KT6UhHlgaS8xsE6MA-U95JdS5DTiwgm7u3EPIRMxXwlgSewen2GpJdvnoTvZ7xbEO3aNxT08s9Pa7q20D4trqg"/>
+</div>
+<!-- Environmental floating bits -->
+<div class="absolute top-0 right-4 float-up text-primary-container opacity-0" style="animation-delay: 0.5s;">
+<span class="material-symbols-outlined text-sm" data-icon="favorite" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div class="absolute top-4 left-0 float-up text-primary-container opacity-0" style="animation-delay: 1.2s;">
+<span class="material-symbols-outlined text-xs" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<!-- Completion Message -->
+<div class="text-center space-y-space-sm mt-space-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary">Great job!</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">You found a tiny blue feather.</p>
+</div>
+<!-- Call to Action -->
+<div class="w-full mt-space-xl">
+<button class="w-full bg-primary text-on-primary font-body-lg text-body-lg py-4 px-6 rounded-full shadow-sm hover:opacity-90 active:scale-98 transition-all duration-200 flex items-center justify-center gap-space-sm">
+<span>Bring to Nest</span>
+<span class="material-symbols-outlined" data-icon="nest_eco_friendly">downloading</span>
+</button>
+<button class="w-full mt-space-sm text-center font-label-sm text-label-sm text-on-surface-variant hover:text-primary py-3 transition-colors">
+                Skip for now
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation (Suppressed for transactional screen as per instructions, but kept hidden in DOM for structure if needed) -->
+<nav class="hidden md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-safe bg-surface-container-low/80 backdrop-blur-md shadow-sm border-t border-outline-variant/20 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 w-16" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 hover:bg-surface-variant/50 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="timer">timer</span>
+<span class="font-label-sm text-label-sm mt-1">Focus</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 w-16" href="#">
+<span class="material-symbols-outlined" data-icon="nest_eco_friendly">downloading</span>
+<span class="font-label-sm text-label-sm mt-1">Nest</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 w-16" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-sm text-label-sm mt-1">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 active:scale-98 transition-all duration-200 py-2 w-16" href="#">
+<span class="material-symbols-outlined" data-icon="settings_heart">settings_heart</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

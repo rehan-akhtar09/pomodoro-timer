@@ -332,6 +332,15 @@ Preferred mobile implementation direction:
 
 The mobile app must preserve the Pomodoro Bird identity: the timer remains the primary interaction, and the bird remains the visual companion.
 
+#### Mobile navigation model (reference)
+
+The mobile design reference (design.md §17) specifies a 5-tab bottom
+navigation: Home, Focus, Nest, Stats, Settings. This is a genuine
+architecture addition relative to the current single-screen web SPA and
+must be scoped as its own task when the mobile phase begins — it is not
+implied by any existing web component split. Do not begin implementing
+this navigation structure now; record it here for future scoping only.
+
 ## 7. Architectural Rules
 
 - Timer logic must be independent from UI.
