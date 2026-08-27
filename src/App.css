@@ -3,43 +3,98 @@
    scene stay visible but secondary. */
 
 .scene {
-    position: relative;
-    width: 100%;
-    max-width: 560px;
+  position: relative;
+  width: 100%;
+  max-width: 560px;
 }
 
-/* The bird sits on top of the environment, centered near the bottom. */
+/* The bird sits on the nest (Phase 3).
+   The nest rim is 28% up from the scene bottom, and the bird SVG leaves
+   ~13.3% transparent space below its feet (160px → ≈21px), so the wrapper
+   bottom is pushed down by that gap to make the feet touch the rim.
+   `transform-origin: bottom center` keeps the feet anchored when the bird
+   scales down on smaller screens. */
 .scene__bird {
-    position: absolute;
-    left: 50%;
-    bottom: 8%;
-    transform: translateX(-50%);
-    z-index: 1;
+  position: absolute;
+  left: 50%;
+  bottom: calc(28% - 21px);
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  z-index: 2;
 }
 
 /* Timer panel — surface card holding time, progress, and controls. */
 .timer-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-5);
-    padding: var(--space-6) var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    width: 100%;
-    max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 480px;
 }
 
-/* Responsive: on small screens the bird scene shrinks so the timer stays
-   large and readable. */
-@media (max-width: 480px) {
-    .scene {
-        max-width: 320px;
-    }
+/* ============================================================
+   Responsive layout — content-based tiers (design.md §11).
+   Desktop is the base; the bird scales down with the scene while staying
+   anchored to the nest rim. The timer never drops below its readable
+   floor (clamp min 3.5rem), and small screens trim decoration and gaps.
+   ============================================================ */
 
-    .timer-panel {
-        padding: var(--space-5) var(--space-3);
-    }
+/* Tablet (≤ 1023px) */
+@media (max-width: 1023px) {
+  .scene {
+    max-width: 520px;
+  }
+
+  .scene__bird {
+    transform: translateX(-50%) scale(0.92);
+    bottom: calc(28% - 19.6px);
+    /* transparent gap at ≈147px bird */
+  }
+}
+
+/* Large mobile (≤ 767px) */
+@media (max-width: 767px) {
+  .scene {
+    max-width: 440px;
+  }
+
+  .scene__bird {
+    transform: translateX(-50%) scale(0.85);
+    bottom: calc(28% - 18px);
+    /* transparent gap at ≈136px bird */
+  }
+}
+
+/* Small mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .app__main {
+    gap: var(--space-5);
+    padding-bottom: var(--space-6);
+  }
+
+  .scene {
+    max-width: 320px;
+  }
+
+  .scene__bird {
+    transform: translateX(-50%) scale(0.7);
+    bottom: calc(28% - 15px);
+    /* transparent gap at ≈112px bird */
+  }
+
+  .timer-panel {
+    padding: var(--space-5) var(--space-3);
+  }
+
+  /* Trim non-essential decoration on small screens. */
+  .environment__picture,
+  .environment__shimmer {
+    display: none;
+  }
 }

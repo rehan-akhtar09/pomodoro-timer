@@ -4,75 +4,79 @@
    ========================================================================== */
 
 :root {
-    /* Color system */
-    --color-background: #f7f3ea;
-    --color-surface: #fffdf8;
-    --color-text: #263238;
-    --color-muted: #6f7b7d;
-    --color-primary: #78c6c8;
-    --color-primary-dark: #55aeb5;
-    --color-accent: #f3b45b;
-    --color-success: #79b77a;
-    --color-border: #e4ded1;
+  /* Color system */
+  --color-background: #f7f3ea;
+  --color-surface: #fffdf8;
+  --color-text: #263238;
+  --color-muted: #6f7b7d;
+  --color-primary: #78c6c8;
+  --color-primary-dark: #55aeb5;
+  --color-accent: #f3b45b;
+  --color-success: #79b77a;
+  --color-border: #e4ded1;
 
-    /* Focus / interaction */
-    --focus-ring-color: var(--color-primary-dark);
-    --focus-ring-offset: 2px;
+  /* Environment palette — cozy scene colors (Phase 3, additive).
+       Used by the CSS-drawn nest; the inline SVG scene mirrors these. */
+  --color-straw-light: #e8b25f;
+  --color-straw: #d99a45;
+  --color-straw-dark: #b97f36;
 
-    /* Typography */
-    --font-family-sans:
-        'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-    --font-size-xs: 0.75rem;
-    --font-size-sm: 0.875rem;
-    --font-size-md: 1rem;
-    --font-size-lg: 1.125rem;
-    --font-size-xl: 1.5rem;
-    --font-size-2xl: 2rem;
-    --font-size-3xl: 3rem;
-    --font-size-timer: clamp(3.5rem, 14vw, 7rem);
+  /* Focus / interaction */
+  --focus-ring-color: var(--color-primary-dark);
+  --focus-ring-offset: 2px;
 
-    /* Spacing scale */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.5rem;
-    --space-6: 2rem;
-    --space-7: 3rem;
-    --space-8: 4rem;
+  /* Typography */
+  --font-family-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 3rem;
+  --font-size-timer: clamp(3.5rem, 14vw, 7rem);
 
-    /* Radii */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --radius-full: 999px;
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
 
-    /* Shadows — soft, not heavy */
-    --shadow-sm: 0 1px 2px rgb(38 50 56 / 0.06);
-    --shadow-md: 0 4px 12px rgb(38 50 56 / 0.08);
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
 
-    /* Layout */
-    --layout-max-width: 720px;
-    --header-height: 3.5rem;
+  /* Shadows — soft, not heavy */
+  --shadow-sm: 0 1px 2px rgb(38 50 56 / 0.06);
+  --shadow-md: 0 4px 12px rgb(38 50 56 / 0.08);
 
-    /* Motion */
-    --transition-fast: 120ms ease;
-    --transition-base: 200ms ease;
-    --duration-breathe: 6s;
-    --duration-wobble: 900ms;
+  /* Layout */
+  --layout-max-width: 720px;
+  --header-height: 3.5rem;
+
+  /* Motion */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --duration-breathe: 6s;
+  --duration-wobble: 900ms;
 }
 
 /* ==========================================================================
    Reduced motion — disable non-essential animation globally.
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
