@@ -126,6 +126,39 @@ The primary goal is to make focused work easier to start and sustain without add
 - Rewards encourage consistency without punishing missed sessions.
 - Rewards are secondary to the Pomodoro timer and productivity experience.
 
+## Audio & Cozy Soundscape
+
+The app should provide an optional, calm audio experience that helps users maintain focus without becoming distracting.
+
+### Core features
+- Optional cozy background music during Focus sessions.
+- Optional relaxing/ambient audio during Break sessions.
+- Background audio should loop seamlessly while the session is active.
+- Music must be calm, soft, and non-distracting.
+- Supported styles may include:
+  - soft piano
+  - gentle lo-fi without distracting beats
+  - warm acoustic ambience
+  - soft rain
+  - forest/nature ambience
+  - other calm concentration soundscapes
+- Users can enable or disable Focus Music.
+- Users can enable or disable Break Music.
+- Users can control music volume independently from completion sounds.
+- Remember the user's audio preferences using the existing settings persistence mechanism.
+- Completion sound should play when a FOCUS session successfully reaches COMPLETED.
+- Completion sound should be short, pleasant, and clearly distinguishable from the background music.
+- When a session completes, background music should gently fade out before or while the completion sound plays.
+- Completion notification should continue to work independently of audio.
+- Audio must never be required for the timer to function.
+- If audio cannot start because of browser/mobile autoplay restrictions, the timer must continue normally and the user should receive appropriate in-app feedback.
+- Audio failures must never stop, pause, reset, or otherwise affect the timer.
+
+### Audio philosophy
+Audio follows the product principle:
+"Calm over noisy."
+The audio experience should enhance focus and atmosphere without competing with the timer, bird, or environment.
+
 ### P2 — Future
 
 - Accounts and cloud synchronization.

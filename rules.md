@@ -262,6 +262,39 @@ The bird is a companion, not the primary product. The timer must remain visually
 - Reward animations must respect reduced-motion preferences.
 - Reward UI must not interfere with timer operation or accessibility.
 
+## Audio Rules
+### What to use
+- Use a small, curated collection of local audio assets.
+- Prefer compressed web/mobile-friendly audio formats.
+- Keep audio files optimized for application size and performance.
+- Use a centralized Audio Service rather than controlling audio directly from individual UI components.
+- Reuse the existing Storage Service for audio preferences.
+- Audio playback must be event/state driven.
+- Audio must remain independent from Timer Engine state mutation.
+- Use smooth fade-in/fade-out transitions where appropriate.
+- Prevent overlapping instances of the same audio track.
+- Provide graceful handling for autoplay restrictions and unavailable audio assets.
+### What to avoid
+- Do not make audio required for the timer to function.
+- Do not allow audio errors to crash the application.
+- Do not automatically start loud audio without user consent.
+- Do not use aggressive, distracting, repetitive, or high-volume music.
+- Do not add excessive numbers of audio files.
+- Do not load very large uncompressed audio assets.
+- Do not create a second storage system for audio preferences.
+- Do not put audio playback logic directly inside Timer Engine.
+- Do not allow multiple audio tracks to play simultaneously unless explicitly designed as layered ambient audio.
+- Do not use copyrighted music unless the project has the appropriate license/rights.
+### Autoplay rule
+Because browser and mobile platforms may restrict automatic audio playback:
+- Never assume audio playback will succeed.
+- Catch playback failures.
+- Continue the timer normally when playback is rejected.
+- Allow the user to start audio after a direct interaction with the application.
+- Do not repeatedly attempt failed playback in a way that annoys the user.
+### Privacy
+Audio preferences are user settings and must not contain personally identifiable information.
+
 ## 7. Definition of Done
 
 A feature is complete only when:

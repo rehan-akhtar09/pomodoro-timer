@@ -227,7 +227,29 @@ Tasks:
 - Add reduced-motion support.
 - Test focus visibility and contrast.
 
+### Audio & Cozy Soundscape
+Tasks:
+- Create the Audio Service.
+- Add optimized local Focus music assets.
+- Add optimized local Break/ambient music assets.
+- Add a short completion sound.
+- Implement Focus music playback.
+- Implement Break music playback.
+- Implement looping.
+- Implement volume control.
+- Implement independent enable/disable controls.
+- Implement completion sound enable/disable.
+- Implement gentle fade-in/fade-out behavior.
+- Handle pause/resume behavior.
+- Handle autoplay restrictions.
+- Handle missing/corrupt audio assets gracefully.
+- Ensure audio failures never affect timer operation.
+- Add automated tests for audio state transitions where practical.
+- Verify that only one intended background track is active at a time.
+
 **Exit criteria:** Core workflows are accessible and robust.
+
+The user can optionally enable a calm background soundscape during Focus and Break sessions, control its volume, and receive a short completion sound when a FOCUS session successfully completes. Audio failure or platform restrictions never interrupt timer functionality.
 
 ---
 

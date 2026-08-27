@@ -184,6 +184,34 @@ Additional reward responsibilities:
 - Does not control the timer.
 - Does not alter session completion state.
 
+### Audio Service
+Responsible for all optional audio playback.
+Responsibilities:
+- Start and stop Focus background music.
+- Start and stop Break background music.
+- Loop background tracks while the corresponding session is active.
+- Control background music volume.
+- Play the completion sound when a FOCUS session reaches COMPLETED.
+- Fade background music down/up when appropriate.
+- Respect the user's persisted audio preferences.
+- Handle browser/mobile autoplay restrictions gracefully.
+- Prevent multiple copies of the same audio track from playing simultaneously.
+- Never modify TimerState directly.
+- Never become a dependency required for timer operation.
+
+The Audio Service should be independent from Timer Engine logic.
+
+### Audio State
+Audio state should be derived from timer/session state and user preferences.
+Example:
+IDLE -> no background audio
+FOCUSING -> Focus music if enabled
+SHORT_BREAK -> Break music if enabled
+LONG_BREAK -> Break music if enabled
+PAUSED -> pause/fade audio according to the user's configured behavior
+COMPLETED -> fade background music and play completion sound
+Audio playback errors must be isolated from the timer.
+
 ## 4. Data Flow
 
 1. User presses Start.
@@ -200,6 +228,24 @@ Additional reward responsibilities:
 9. Notification service provides optional completion feedback.
 10. Timer transitions to the next configured session.
 
+### Audio flow
+When a FOCUS session starts:
+1. Timer enters FOCUSING.
+2. Audio Service checks the user's Focus Music preference.
+3. If enabled and playback is permitted, Focus music begins/continues.
+4. Music loops quietly in the background.
+When the user pauses:
+1. Timer enters PAUSED.
+2. Audio Service pauses or gently fades the background music.
+3. Timer remains fully functional even if audio cannot be paused or controlled.
+When the session completes:
+1. Timer reaches COMPLETED.
+2. Audio Service fades/stops the current background music.
+3. Audio Service plays the short completion sound.
+4. Notification Service sends the completion notification if permitted.
+5. Existing bird completion animation and reward flow continue normally.
+Audio must not block or delay any timer transition.
+
 ## 5. Persistence
 
 MVP persistence should be local-first.
@@ -210,6 +256,14 @@ Persist:
 - Daily streak information.
 - User preferences.
 - Collected gift/reward records.
+- User audio preferences, including:
+  - Focus Music enabled/disabled
+  - Break Music enabled/disabled
+  - Background music volume
+  - Completion sound enabled/disabled
+  - Completion sound volume
+Use the existing Storage Service/schema.
+Do not create a separate storage mechanism for audio settings.
 
 Do not persist:
 - Unnecessary personal information.

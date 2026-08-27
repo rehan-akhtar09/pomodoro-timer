@@ -139,6 +139,9 @@ No account or backend is required for MVP.
 ### AI boundary
 AI can assist with implementation, tests, documentation, and visual assets, but it must not silently change requirements, architecture, dependencies, privacy behavior, or timer behavior.
 
+### Audio & Cozy Soundscape Decision
+The Pomodoro Bird app will include an optional cozy audio system. The intended experience is: calm background audio during Focus; relaxing background audio during Break; gentle fade at session completion; short completion sound; completion notification; independent user controls for music and completion sounds. Audio is an enhancement and must never become a dependency of the timer. The system must respect the existing product personality: 'Calm over noisy.'
+
 ## Currently Working On
 
 **Current stage:** Phase 2 — Bird Companion (completed).

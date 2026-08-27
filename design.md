@@ -241,6 +241,25 @@ All of these states keep the product voice short, encouraging, and calm (see §1
 - Keep source assets organized.
 - Do not embed unnecessary metadata in production assets.
 
+### Audio Assets
+
+```text
+public/assets/audio/
+├── focus/
+│   ├── focus-01.*
+│   ├── focus-02.*
+│   └── ...
+├── break/
+│   ├── break-01.*
+│   ├── break-02.*
+│   └── ...
+└── completion/
+    └── completion.*
+```
+
+Use a small number of carefully selected tracks rather than a large music library.
+Audio filenames should be descriptive and consistent.
+
 ## 15. Product Personality
 
 The product voice should be:
@@ -284,3 +303,62 @@ The app should encourage returning to focus rather than punish missed sessions.
   animation.
 - Reward UI must remain accessible and understandable without relying
   solely on color, animation, or sound.
+
+## Audio & Cozy Soundscape
+
+### Design philosophy
+Audio is an optional enhancement, not a requirement. The audio experience
+follows the same personality as the visuals: calm, cozy, and gentle.
+The timer remains the visual and functional hero. Audio should complement,
+not compete with, the timer, bird, or environment.
+
+### Focus audio
+- Optional cozy background music during Focus sessions.
+- The track loops quietly and seamlessly while the focus session is active.
+- Music must be calm, soft, and non-distracting.
+
+### Break audio
+- Optional relaxing/ambient audio during Break sessions.
+- Supports the shift into rest without becoming distracting.
+
+### Volume
+- Background music volume is user-controlled.
+- Background music volume is controlled independently from completion
+  sounds.
+
+### Completion experience
+When a FOCUS session completes:
+1. The timer reaches COMPLETED.
+2. Background music gently fades out.
+3. The bird celebrates.
+4. A short, pleasant completion sound plays.
+5. The completion notification is delivered and the reward flow continues.
+
+The completion sound should be clearly distinguishable from the background
+music.
+
+### Pause behavior
+When the user pauses, background audio pauses or gently fades according to
+the user's configured behavior. The timer remains fully functional even if
+audio cannot be paused or controlled.
+
+### Audio and motion
+Audio transitions should feel consistent with the visual motion language —
+gentle and gradual rather than abrupt. Background audio is present but
+never visually or awrally prominent during deep focus.
+
+### Accessibility
+- Audio is never the only way to understand timer state.
+- Completion is also communicated visually and through the notification.
+- Audio controls are labeled and keyboard accessible.
+- Sounds are calm and non-startling.
+
+### Visual controls
+Keep audio controls compact and calm, for example:
+- 🔊 volume
+- 🎵 soundscape toggle
+- 🔔 completion sound toggle
+
+### Audio transitions
+Use short, gentle transitions rather than abrupt starts/stops. Background
+music fades in and out instead of cutting.
