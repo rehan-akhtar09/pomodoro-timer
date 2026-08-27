@@ -1,0 +1,62 @@
+/* App shell — Phase 0.
+   Layout keeps the timer (or its placeholder) visually dominant while the
+   environment + bird scene stay visible but secondary. */
+
+.scene {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+}
+
+/* The bird sits on top of the environment, centered near the bottom. */
+.scene__bird {
+    position: absolute;
+    left: 50%;
+    bottom: 8%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* Timer placeholder (replaced by the real Timer in Phase 1). */
+.timer-placeholder {
+    text-align: center;
+    padding: var(--space-6) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+    max-width: 480px;
+}
+
+.timer-placeholder__time {
+    font-size: var(--font-size-timer);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+}
+
+.timer-placeholder__label {
+    margin-top: var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+
+.timer-placeholder__note {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+}
+
+/* Responsive: on small screens the bird scene shrinks so the timer stays
+   large and readable. */
+@media (max-width: 480px) {
+    .scene {
+        max-width: 320px;
+    }
+}

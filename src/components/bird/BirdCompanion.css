@@ -1,0 +1,30 @@
+/* BirdCompanion — Phase 0 foundation.
+   Subtle idle movement only; reduced motion is handled globally. */
+
+.bird-companion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+.bird-companion__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Gentle, slow breathing so the bird feels alive without distracting. */
+    animation: bird-breathe var(--duration-breathe) ease-in-out infinite;
+    will-change: transform;
+}
+
+@keyframes bird-breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
