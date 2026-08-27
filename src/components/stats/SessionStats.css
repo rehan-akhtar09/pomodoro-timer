@@ -1,0 +1,47 @@
+/* Session statistics — Phase 4.
+   A quiet, secondary readout below the controls (design.md §3). Uses the
+   surface card pattern with a lighter visual weight than the timer panel. */
+
+.session-stats {
+  width: 100%;
+  max-width: 480px;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.session-stats__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+}
+
+.session-stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 5rem;
+}
+
+.session-stats__label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.session-stats__value {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.session-stats__empty {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}

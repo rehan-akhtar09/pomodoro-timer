@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     DEFAULT_TIMER_SETTINGS,
+    type SessionCompletionPayload,
     type SessionMode,
     type TimerSettings,
     type TimerState,
@@ -56,11 +57,27 @@ function toSnapshot(engine: TimerEngineState, now: number): PomodoroSnapshot {
 }
 
 /**
+ * Session completion event delivered to subscribers (Phase 4 stats; the Phase
+ * 4B reward service will reuse the same callback). Extends the engine's
+ * payload with the configured duration of the session that just finished.
+ */
+export interface SessionCompletionEvent extends SessionCompletionPayload {
+    /** Configured duration of the completed session in ms. */
+    durationMs: number;
+}
+
+/**
  * Drive the timer engine from React.
  *
  * @param settings Timer settings (defaults to the MVP in-memory defaults).
+ * @param onSessionComplete Optional subscriber called once per naturally
+ *   completed session (never for skipped sessions). Stored in a ref so the
+ *   tick loop stays stable. This is the Phase 4 extension point.
  */
-export function usePomodoro(settings: TimerSettings = DEFAULT_TIMER_SETTINGS): PomodoroSnapshot & PomodoroActions {
+export function usePomodoro(
+    settings: TimerSettings = DEFAULT_TIMER_SETTINGS,
+    onSessionComplete?: (event: SessionCompletionEvent) => void,
+): PomodoroSnapshot & PomodoroActions {
     // Mutable engine state kept in a ref so the interval always reads the
     // latest values without re-creating the interval on every render. The
     // lazy-ref pattern initializes the engine exactly once per mount.
@@ -71,13 +88,16 @@ export function usePomodoro(settings: TimerSettings = DEFAULT_TIMER_SETTINGS): P
 
     const engineRef = useRef<TimerEngineState>(initialEngineRef.current);
     const settingsRef = useRef(settings);
+    const onSessionCompleteRef = useRef(onSessionComplete);
     const lastSnapshotRef = useRef<PomodoroSnapshot>(toSnapshot(engineRef.current, Date.now()));
 
     // Initialize React state from the same initial snapshot.
     const [snapshot, setSnapshot] = useState<PomodoroSnapshot>(lastSnapshotRef.current);
 
-    // Keep the latest settings available to the interval callback.
+    // Keep the latest settings and completion subscriber available to the
+    // interval callback.
     settingsRef.current = settings;
+    onSessionCompleteRef.current = onSessionComplete;
 
     /** Apply an engine result, refresh the snapshot, and record it for the tick loop. */
     const dispatch = useCallback((engine: TimerEngineState): PomodoroSnapshot => {
@@ -120,11 +140,16 @@ export function usePomodoro(settings: TimerSettings = DEFAULT_TIMER_SETTINGS): P
             // A running session whose target time has passed finishes now. The
             // engine decides the next state (COMPLETED or auto-started session).
             if (engine.targetEndTime !== null && engine.targetEndTime <= now) {
+                const completedDurationMs = engine.durationMs;
                 const result = applyAction(engine, { type: 'COMPLETE' }, settingsRef.current, now);
                 engine = result.state;
-                // SESSION_COMPLETED events are intentionally ignored here: the
-                // visible state already reflects the transition. Phase 4 will
-                // subscribe for stats/notifications.
+                // Fan out completion events (Phase 4 stats; Phase 4B rewards).
+                // Skipped sessions never emit events, so they are never recorded.
+                for (const event of result.events) {
+                    if (event.type === 'SESSION_COMPLETED') {
+                        onSessionCompleteRef.current?.({ ...event.payload, durationMs: completedDurationMs });
+                    }
+                }
             }
 
             const next = toSnapshot(engine, now);

@@ -1,10 +1,14 @@
 import { BirdCompanion } from './components/bird/BirdCompanion';
 import { timerStateToBirdState } from './components/bird/birdStates';
 import { Environment } from './components/environment/Environment';
+import { SettingsPanel } from './components/settings/SettingsPanel';
+import { SessionStats } from './components/stats/SessionStats';
 import { Timer } from './components/timer/Timer';
 import { TimerControls } from './components/timer/TimerControls';
 import { TimerProgress } from './components/timer/TimerProgress';
 import { usePomodoro } from './hooks/usePomodoro';
+import { useSessionStats } from './hooks/useSessionStats';
+import { useSettings } from './hooks/useSettings';
 import './App.css';
 
 /**
@@ -12,10 +16,18 @@ import './App.css';
  *
  * Composes the environment + bird scene and the Phase 1 timer (display,
  * progress, controls) driven by the `usePomodoro` hook. The bird state is
- * derived from the timer state through the single shared mapping.
+ * derived from the timer state through the single shared mapping. Settings
+ * are loaded/persisted via `useSettings` (Phase 4) and drive the timer.
+ * Completed sessions feed the stats history through the `onSessionComplete`
+ * extension point (skipped sessions are never recorded).
  */
 export function App() {
-    const { state, mode, remainingMs, durationMs, start, pause, resume, reset, skip } = usePomodoro();
+    const { settings, saveFailed, updateSettings } = useSettings();
+    const { stats, recordSession } = useSessionStats();
+    const { state, mode, remainingMs, durationMs, start, pause, resume, reset, skip } = usePomodoro(
+        settings,
+        recordSession,
+    );
 
     const birdState = timerStateToBirdState(state);
 
@@ -50,6 +62,14 @@ export function App() {
                         onSkip={skip}
                     />
                 </section>
+
+                <SessionStats stats={stats} />
+
+                <SettingsPanel
+                    settings={settings}
+                    saveFailed={saveFailed}
+                    updateSettings={updateSettings}
+                />
             </main>
 
             <footer className="app__footer">

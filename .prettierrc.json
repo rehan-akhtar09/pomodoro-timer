@@ -2,5 +2,15 @@
     "singleQuote": true,
     "semi": true,
     "trailingComma": "all",
-    "printWidth": 100
+    "printWidth": 100,
+    "tabWidth": 4,
+    "endOfLine": "crlf",
+    "overrides": [
+        {
+            "files": "*.css",
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }
