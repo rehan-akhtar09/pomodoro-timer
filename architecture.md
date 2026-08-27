@@ -165,6 +165,25 @@ storageService. Validates input before it reaches TimerSettings (reject
 negative or zero durations). Implemented in Phase 4, alongside persistence,
 since settings have no effect until they can be saved and reloaded.
 
+### Reward Service
+Tracks gifts earned from completed FOCUS sessions and persists them
+through the same Storage Service used for settings/statistics — no
+separate storage mechanism.
+
+Exposes the current gift collection to the Environment for rendering.
+
+Contains no timer logic and never modifies TimerState.
+
+Additional reward responsibilities:
+
+- Determines reward rarity from the completed session duration.
+- Selects exactly one gift for each eligible completed FOCUS session.
+- Prevents duplicate rewards for the same session.
+- Maintains the distinction between the complete collection and the
+  currently displayed nest items.
+- Does not control the timer.
+- Does not alter session completion state.
+
 ## 4. Data Flow
 
 1. User presses Start.
@@ -174,6 +193,9 @@ since settings have no effect until they can be saved and reloaded.
 5. Bird companion changes to focus state.
 6. On completion, timer engine emits a session completion event.
 7. Statistics service records the completed session.
+7a. If the completed session was a focus session, Reward Service adds a
+    gift record and the bird carries it into the nest, alongside the
+    happy animation from step 8.
 8. Bird changes to happy state.
 9. Notification service provides optional completion feedback.
 10. Timer transitions to the next configured session.
@@ -187,6 +209,7 @@ Persist:
 - Completed session records.
 - Daily streak information.
 - User preferences.
+- Collected gift/reward records.
 
 Do not persist:
 - Unnecessary personal information.

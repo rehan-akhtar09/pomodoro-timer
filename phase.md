@@ -93,6 +93,126 @@ and reloading the app preserves valid settings and progress.
 
 ---
 
+## Phase 4B — Reward System (Gifts & Nest)
+
+### Goal
+
+Reward the user visually for completing a focus session: the bird brings
+a gift, and the gift becomes a permanent part of the bird's nest/world.
+
+### Reward Rules
+
+- Every completed FOCUS session grants exactly one gift.
+- Break completion does not grant a normal gift.
+- Skipped or cancelled sessions do not grant a normal gift.
+- Longer focus sessions may have improved rarity odds but still grant
+  exactly one normal gift.
+- Each reward references the completed focus session.
+- A completed focus session must never generate more than one reward.
+- Earned rewards persist permanently unless the user explicitly deletes
+  their data.
+- Rewards may accumulate as duplicates.
+- The complete collection is persisted even when only a limited number
+  of gifts are displayed in the nest.
+
+### Initial Gift Pool
+
+Common:
+- Sunflower Seed
+- Wheat Bundle
+- Small Leaf
+- Feather
+- Acorn
+
+Uncommon:
+- Small Flower
+- Berry Cluster
+- Small Twig
+- Soft Nest Fiber
+
+Rare:
+- Decorative Nest Piece
+- Special Flower
+- Polished Branch
+
+Very Rare:
+- Golden Feather
+- Rare Nest Ornament
+- Special Nest Decoration
+
+### Initial Rarity Targets
+
+15-minute:
+- Common 75%
+- Uncommon 18%
+- Rare 6%
+- Very Rare 1%
+
+25-minute:
+- Common 70%
+- Uncommon 20%
+- Rare 8%
+- Very Rare 2%
+
+50-minute:
+- Common 60%
+- Uncommon 25%
+- Rare 12%
+- Very Rare 3%
+
+90+ minute:
+- Common 50%
+- Uncommon 30%
+- Rare 15%
+- Very Rare 5%
+
+These are initial balancing targets and must remain configurable.
+
+### Tasks
+
+- Define a Gift/Reward data model (id, sessionId, type/icon, rarity,
+  earnedAt) in a new src/types/rewards.ts file — do not add this to
+  types/timer.ts.
+- Trigger gift delivery only when a FOCUS session reaches COMPLETED
+  (not on break completion, not on skip without completion).
+- Add a small set of gift SVG icons under public/assets/gifts/, following
+  the same SVG asset rules as the bird assets.
+- Extend Environment.tsx to render accumulated earned gifts inside a
+  nest/world area, without competing visually with the timer
+  (design.md §2 "the timer is the hero").
+- Persist earned gifts through the same Storage Service/schema used for
+  settings and session stats (Phase 4) — do not create a second,
+  separate storage mechanism.
+- Respect prefers-reduced-motion: reuse usePrefersReducedMotion from
+  Phase 2; gift delivery becomes instant placement, no animation, when
+  reduced motion is set.
+- Define a cap or rotation/archival behavior for the nest so the scene
+  never becomes visually cluttered (design.md "avoid busy patterns/visual
+  noise").
+- The complete collection must remain persisted even when a gift is no
+  longer visible in the nest.
+- Protect against duplicate reward creation for the same session.
+- Tests: a gift is added exactly once per completed FOCUS session; gifts
+  persist across reload; nest rendering never blocks the timer or bird
+  from remaining visually dominant.
+
+### Dependency note
+
+This phase depends on Phase 3 (Environment art, for a nest/world area to
+render into) and Phase 4 (Storage Service). If those aren't finished yet,
+implement only the data model and the completion trigger now, and defer
+nest rendering until Phase 3/4 are done — do not invent a temporary
+storage mechanism to unblock this early.
+
+### Exit criteria
+
+Completing a focus session visibly delivers a gift into the bird's nest,
+and the nest correctly reflects the total number of completed focus
+sessions after a reload, while preserving the user's complete reward
+collection.
+
+---
+
 ## Phase 5 — Notifications and Accessibility
 
 ### Goal

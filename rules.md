@@ -239,6 +239,29 @@ At minimum test:
 ### Project-specific rule
 The bird is a companion, not the primary product. The timer must remain visually and functionally dominant.
 
+### Reward System Rules
+
+- A normal reward may only be granted for a legitimately completed FOCUS
+  session.
+- A session must never produce more than one normal reward.
+- Break completion does not grant a normal reward.
+- Skipping/cancelling a session does not grant a normal reward.
+- Reward records must reference the originating session ID.
+- Reward creation must be idempotent.
+- Reward data must use the existing Storage Service.
+- Do not create a second storage system specifically for rewards.
+- The Reward Service must not modify TimerState.
+- Static reward SVGs are application assets, not Firestore documents.
+- Client-side UI must not be trusted to grant arbitrary cloud rewards once
+  Firebase is implemented.
+- Firebase Security Rules must protect user-owned reward data.
+- Rewards must not use real-money gambling mechanics.
+- Reward randomness must be cosmetic and productivity-oriented.
+- Do not punish users for missed sessions.
+- Do not remove earned rewards because of streak resets.
+- Reward animations must respect reduced-motion preferences.
+- Reward UI must not interfere with timer operation or accessibility.
+
 ## 7. Definition of Done
 
 A feature is complete only when:

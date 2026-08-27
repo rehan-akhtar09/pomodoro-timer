@@ -256,3 +256,31 @@ Avoid:
 > “You failed your streak!”
 
 The app should encourage returning to focus rather than punish missed sessions.
+
+## 16. Reward System (Gifts & Nest)
+
+- Gifts are small, calm vector objects consistent with the existing cozy
+  palette (design.md §4) — not bright, cartoonish, or attention-grabbing.
+- Gifts accumulate in the nest/world area without creating visual
+  clutter (design.md §8's "avoid busy patterns / visual noise" applies
+  here too).
+- Gift delivery is a short, non-distracting motion, similar in spirit to
+  the existing completion animation (design.md §9).
+- No guilt-based framing for missed or skipped sessions — the reward
+  system only ever adds, never removes or visibly "punishes" (consistent
+  with §15 Product Personality).
+- Exactly one normal gift is awarded per completed FOCUS session.
+- Longer sessions may visually communicate improved reward rarity, but
+  the reward presentation must remain calm and non-gambling-like.
+- The reward reveal must never obscure the primary timer for an extended
+  period.
+- The nest should display no more than 12 visible gift items at once.
+- Items outside the visible nest display remain safely stored in the
+  collection.
+- Duplicate gifts are allowed and should be represented naturally.
+- Gift rarity should be communicated subtly rather than through flashy
+  effects.
+- Reduced-motion users receive the reward immediately without delivery
+  animation.
+- Reward UI must remain accessible and understandable without relying
+  solely on color, animation, or sound.

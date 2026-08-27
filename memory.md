@@ -170,6 +170,24 @@ AI can assist with implementation, tests, documentation, and visual assets, but 
 Next major stage:
 - **Phase 3 — Environment:** implement the cozy workspace environment behind the bird.
 
+## Reward System Direction (recorded 2026-08-27)
+
+Pomodoro Bird now has a defined lightweight reward system. It is a documented product decision (see PRD.md "Focus Rewards — Gifts & Nest", phase.md Phase 4B, architecture.md §3 Reward Service, design.md §16, rules.md "Reward System Rules") and is **not yet implemented in code**.
+
+- Completing a FOCUS session grants exactly one gift.
+- The bird brings the gift into the nest/world.
+- Initial gift categories include seeds, leaves, feathers, flowers, berries, twigs, nest materials, and special decorations.
+- Gifts have four rarity levels: Common, Uncommon, Rare, Very Rare.
+- Longer focus sessions have improved rarity targets.
+- Reward records reference completed session IDs.
+- Duplicate reward creation must be prevented.
+- The complete collection is persistent.
+- The nest has a limited visible display (12 items) to prevent visual clutter.
+- Rewards never punish missed sessions.
+- Reward functionality remains secondary to the timer.
+- Reward persistence uses the same Storage Service.
+- Future cloud implementation must secure user-owned reward data through Firebase Authentication and Firestore Security Rules.
+
 ## Future Direction
 
 After MVP stability:

@@ -112,6 +112,20 @@ The primary goal is to make focused work easier to start and sustain without add
 - Keyboard shortcuts.
 - PWA/offline support improvements.
 
+### Focus Rewards — Gifts & Nest
+
+- Completing a FOCUS session grants exactly one collectible gift.
+- The bird visually brings the gift after the session completes.
+- Gifts are nature/cozy themed.
+- Gifts have Common, Uncommon, Rare, and Very Rare rarity.
+- Longer focus sessions can have improved rarity odds.
+- Gifts become part of the bird's nest/world.
+- The complete collection is persistent.
+- The visible nest has a limited display capacity to prevent clutter.
+- Duplicate gifts are allowed.
+- Rewards encourage consistency without punishing missed sessions.
+- Rewards are secondary to the Pomodoro timer and productivity experience.
+
 ### P2 — Future
 
 - Accounts and cloud synchronization.
