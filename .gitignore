@@ -3,3 +3,8 @@ dist
 coverage
 *.local
 .DS_Store
+
+# Environment files and credentials — never commit secrets (rules.md §6).
+.env
+.env.*
+credentials/*.json
