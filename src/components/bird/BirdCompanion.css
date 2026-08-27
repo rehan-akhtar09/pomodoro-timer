@@ -1,5 +1,11 @@
-/* BirdCompanion — Phase 0 foundation.
-   Subtle idle movement only; reduced motion is handled globally. */
+/* BirdCompanion — Phase 2: per-state motion + transitions.
+   Motion rules follow design.md §7 and §9:
+   - Idle/focus: slow breathing (subtle, never constant movement).
+   - Break: slightly playful stretch/hop, no proportion distortion.
+   - Happy: short one-shot celebration (COMPLETED is transient).
+   - Sleeping: gentle breathing while asleep.
+   All motion is transform/opacity only and non-essential; it is removed
+   entirely when prefers-reduced-motion is enabled. */
 
 .bird-companion {
     display: inline-flex;
@@ -12,9 +18,31 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* Gentle, slow breathing so the bird feels alive without distracting. */
-    animation: bird-breathe var(--duration-breathe) ease-in-out infinite;
+    /* Smooth cross-fade when the bird state changes (no hard cuts). */
+    transition: opacity var(--transition-base), transform var(--transition-base);
     will-change: transform;
+}
+
+/* Slow breathing — idle and focus (design.md §9 "Focus"). */
+.bird-companion__image--breathe {
+    animation: bird-breathe var(--duration-breathe) ease-in-out infinite;
+}
+
+/* Slightly playful stretch/hop — break (design.md §9 "Break").
+   Scale/translate only so proportions are never distorted (design.md §7). */
+.bird-companion__image--play {
+    animation: bird-play var(--duration-wobble) ease-in-out infinite;
+}
+
+/* Short one-shot celebration — happy (design.md §9 "Completion").
+   COMPLETED is transient, so this runs once and settles. */
+.bird-companion__image--celebrate {
+    animation: bird-celebrate 1.1s ease-in-out 1;
+}
+
+/* Gentle breathing while asleep — sleeping. */
+.bird-companion__image--sleep {
+    animation: bird-sleep var(--duration-breathe) ease-in-out infinite;
 }
 
 @keyframes bird-breathe {
@@ -26,5 +54,75 @@
 
     50% {
         transform: scale(1.02);
+    }
+}
+
+@keyframes bird-play {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    30% {
+        transform: translateY(-4%) scale(1.01);
+    }
+
+    60% {
+        transform: translateY(0) scale(1.01);
+    }
+
+    80% {
+        transform: translateY(-2%) scale(1.005);
+    }
+}
+
+@keyframes bird-celebrate {
+
+    0% {
+        transform: scale(1) translateY(0);
+    }
+
+    25% {
+        transform: scale(1.04) translateY(-6%);
+    }
+
+    50% {
+        transform: scale(1.06) translateY(0);
+    }
+
+    75% {
+        transform: scale(1.03) translateY(-3%);
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes bird-sleep {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.99);
+    }
+}
+
+/* Accessibility (design.md §9): disable all non-essential bird motion when
+   the user prefers reduced motion. State still changes instantly because
+   state is communicated by the distinct SVG, never by animation alone. */
+@media (prefers-reduced-motion: reduce) {
+
+    .bird-companion__image,
+    .bird-companion__image--breathe,
+    .bird-companion__image--play,
+    .bird-companion__image--celebrate,
+    .bird-companion__image--sleep {
+        animation: none;
+        transition: none;
     }
 }
