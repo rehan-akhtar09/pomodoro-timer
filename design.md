@@ -391,3 +391,28 @@ Key elements to carry forward when the mobile phase begins:
 - Navigation: bottom tab bar with 5 tabs - Home, Focus, Nest, Stats,
   Settings. This introduces multi-screen navigation, which the current
   web app does not have; flag this for architecture.md (see Addition 2).
+
+## 18. Bird Behavior & Movement (Web)
+
+- Short focus/break sessions: bird stays more active (walk/hop/look
+  around) rather than static the whole time.
+- Long sessions: bird may transition to SLEEPY -> WALK_TO_NEST ->
+  NEST_SETTLE -> SLEEP, defining "long" relative to the session's
+  configured duration.
+- Near completion: bird wakes if sleeping, shows brief
+  ALERT/ANTICIPATION before HAPPY on completion.
+- Gift delivery: bird visibly receives, carries, and places the gift at
+  the nest anchor — connecting bird motion to the existing reward system
+  rather than the gift appearing to "pop in" on its own.
+- Placed gifts remain draggable/repositionable by the user afterward;
+  position persists through the existing Storage Service (same pattern
+  as Phase 4/4B), using normalized (percentage) coordinates, not pixels.
+- Pause: bird moves to a calm/safe pose and freezes; resume continues
+  from there.
+- Reduced motion: state changes still occur, but walk/hop/fly/carry
+  motion is skipped — the bird's position and pose update instantly to
+  the final state (matches the existing usePrefersReducedMotion pattern
+  from Phase 2).
+- Core rule: Timer/session state -> Bird Behavior Controller -> bird
+  pose + position -> visual result. The bird never influences timer
+  correctness in any direction.

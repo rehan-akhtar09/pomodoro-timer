@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="title desc">
-  <title id="title">Pomodoro Bird — Idle</title>
-  <desc id="desc">Cozy Pomodoro Bird character in the idle state.</desc>
+  <title id="title">Pomodoro Bird — Carry Gift</title>
+  <desc id="desc">Cozy Pomodoro Bird character in the carry gift state.</desc>
   <g transform="">
     <ellipse cx="118" cy="112" rx="66" ry="52" fill="#A9BDA8"/>
     <circle cx="166" cy="77" r="42" fill="#A9BDA8"/>
@@ -12,5 +12,9 @@
     <path d="M82 86 Q104 66 128 88 Q105 107 82 86 Z" fill="#7F987F"/>
     <path d="M83 87 Q106 93 127 88" fill="none" stroke="#6F826F" stroke-width="3"/>
     
+    <path d="M197 86 Q211 101 201 116" fill="none" stroke="#C9795C" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="211" cy="116" r="10" fill="#C9A66B"/>
+    <path d="M202 116 h18 M211 107 v18" stroke="#F4E7D0" stroke-width="2.5" stroke-linecap="round"/>
+
   </g>
 </svg>

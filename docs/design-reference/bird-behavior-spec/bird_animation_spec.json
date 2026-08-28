@@ -1,0 +1,150 @@
+{
+    "name": "Pomodoro Bird Animation Specification",
+    "version": "1.0.0",
+    "character": "Pomodoro Bird",
+    "runtime": "Web (React + CSS/SVG)",
+    "recommended_character_animation": "CSS/SVG (no Rive)",
+    "movement_controller": "Bird Behavior Controller (JS position state + CSS transitions)",
+    "states": [
+        "IDLE",
+        "WAKE",
+        "FOCUS_CALM",
+        "FOCUS_ALERT",
+        "FOCUS_ANTICIPATION",
+        "WALK",
+        "HOP",
+        "FLY",
+        "LAND",
+        "SLEEPY",
+        "WALK_TO_NEST",
+        "NEST_SETTLE",
+        "SLEEP",
+        "WAKE_FROM_NEST",
+        "HAPPY",
+        "RECEIVE_GIFT",
+        "CARRY_GIFT",
+        "PLACE_GIFT"
+    ],
+    "inputs": {
+        "state": "enum/string-like state selector in implementation",
+        "isReducedMotion": "boolean",
+        "movementSpeed": "number 0..1",
+        "facing": "number (-1 left, 1 right)",
+        "isCarryingGift": "boolean"
+    },
+    "movement_anchors": [
+        {
+            "id": "nest",
+            "type": "nest",
+            "canSleep": true,
+            "canReceiveGift": true
+        },
+        {
+            "id": "branch_left",
+            "type": "branch",
+            "canSleep": false,
+            "canReceiveGift": true
+        },
+        {
+            "id": "branch_right",
+            "type": "branch",
+            "canSleep": false,
+            "canReceiveGift": true
+        },
+        {
+            "id": "ground_left",
+            "type": "ground",
+            "canSleep": false,
+            "canReceiveGift": true
+        },
+        {
+            "id": "ground_center",
+            "type": "ground",
+            "canSleep": false,
+            "canReceiveGift": true
+        },
+        {
+            "id": "ground_right",
+            "type": "ground",
+            "canSleep": false,
+            "canReceiveGift": true
+        }
+    ],
+    "session_behavior": {
+        "short": [
+            "WAKE",
+            "WALK",
+            "LOOK_AROUND",
+            "HOP",
+            "REST",
+            "WALK"
+        ],
+        "long": [
+            "WAKE",
+            "WALK",
+            "EXPLORE",
+            "REST",
+            "SLEEPY",
+            "WALK_TO_NEST",
+            "NEST_SETTLE",
+            "SLEEP"
+        ],
+        "near_completion": [
+            "FOCUS_ALERT",
+            "FOCUS_ANTICIPATION"
+        ],
+        "completion": [
+            "HAPPY",
+            "RECEIVE_GIFT",
+            "CARRY_GIFT",
+            "PLACE_GIFT"
+        ]
+    },
+    "reduced_motion": {
+        "walking": "instant destination",
+        "flying": "instant destination",
+        "nest_entry": "instant",
+        "gift_delivery": "instant placement",
+        "sleep": "state change without animation"
+    },
+    "timing_guidelines_ms": {
+        "wake": [
+            500,
+            900
+        ],
+        "walk_cycle": [
+            650,
+            900
+        ],
+        "hop": [
+            350,
+            550
+        ],
+        "land": [
+            300,
+            500
+        ],
+        "sleep_settle": [
+            700,
+            1200
+        ],
+        "happy": [
+            900,
+            1500
+        ],
+        "gift_place": [
+            700,
+            1100
+        ]
+    },
+    "rules": [
+        "Timer correctness must never depend on animation frames.",
+        "Bird movement must never modify TimerState.",
+        "Bird may only move between valid anchors.",
+        "Never teleport during normal motion.",
+        "Do not animate continuously at high frequency.",
+        "Timer remains the visual hero.",
+        "Long sessions become calmer; short sessions remain somewhat active.",
+        "Gift positions use normalized/logical coordinates, not device pixels."
+    ]
+}

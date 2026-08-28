@@ -1,13 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-<g stroke="#263238" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-<ellipse cx="120" cy="132" rx="68" ry="62" fill="#78C6C8"/>
-<path d="M70 137c-28-17-45-5-49 11 20 17 39 15 55 2" fill="#55AEB5"/>
-<path d="M170 137c28-17 45-5 49 11-20 17-39 15-55 2" fill="#55AEB5"/>
-<circle cx="96" cy="116" r="7" fill="#263238" stroke="none"/>
-<circle cx="144" cy="116" r="7" fill="#263238" stroke="none"/>
-<path d="M112 130l8 7 8-7-8-9z" fill="#F3B45B"/>
-<path d="M104 151c10 8 22 8 32 0" fill="none"/>
-<path d="M92 181c10 8 20 12 28 12s18-4 28-12" fill="none"/>
-<path d="M98 194v14M142 194v14M91 208h14M135 208h14" fill="none"/>
-<path d="M38 72c-7-9-5-18 3-24M202 72c7-9 5-18-3-24" fill="none"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="title desc">
+  <title id="title">Pomodoro Bird — Happy</title>
+  <desc id="desc">Cozy Pomodoro Bird character in the happy state.</desc>
+  <g transform="">
+    <ellipse cx="118" cy="112" rx="66" ry="52" fill="#A9BDA8"/>
+    <circle cx="166" cy="77" r="42" fill="#A9BDA8"/>
+    <path d="M197 80 L224 91 L197 102 Z" fill="#C9795C"/>
+    <ellipse cx="94" cy="118" rx="34" ry="27" fill="#91A991"/>
+    <circle cx="178" cy="68" r="6" fill="#2F3A35"/>
+    <path d="M169 53 Q180 46 190 53" fill="none" stroke="#6F826F" stroke-width="4" stroke-linecap="round"/>
+    <path d="M74 150 Q89 168 105 150 M122 151 Q138 168 154 148" fill="none" stroke="#C9795C" stroke-width="7" stroke-linecap="round"/>
+    <path d="M82 86 Q104 66 128 88 Q105 107 82 86 Z" fill="#7F987F"/>
+    <path d="M83 87 Q106 93 127 88" fill="none" stroke="#6F826F" stroke-width="3"/>
+    <path d="M168 68 Q178 77 188 68" fill="none" stroke="#2F3A35" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

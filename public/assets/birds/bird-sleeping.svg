@@ -1,12 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-<g stroke="#263238" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-<ellipse cx="120" cy="136" rx="68" ry="58" fill="#78C6C8"/>
-<path d="M72 139c-20 7-31 21-29 34 18 5 35-4 46-20" fill="#55AEB5"/>
-<path d="M168 139c20 7 31 21 29 34-18 5-35-4-46-20" fill="#55AEB5"/>
-<path d="M88 119c7 7 14 7 21 0M131 119c7 7 14 7 21 0" fill="none"/>
-<path d="M112 133l8 7 8-7-8-9z" fill="#F3B45B"/>
-<path d="M106 153c9 5 19 5 28 0" fill="none"/>
-<path d="M96 184c9 7 18 10 24 10s15-3 24-10" fill="none"/>
-<path d="M98 194v14M142 194v14M91 208h14M135 208h14" fill="none"/>
-<path d="M176 65h20M184 56v18M201 45h12M207 39v12" fill="none"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="title desc">
+  <title id="title">Pomodoro Bird — Sleep</title>
+  <desc id="desc">Cozy Pomodoro Bird character in the sleep state.</desc>
+  <g transform="">
+    <ellipse cx="118" cy="112" rx="66" ry="52" fill="#A9BDA8"/>
+    <circle cx="166" cy="77" r="42" fill="#A9BDA8"/>
+    <path d="M197 80 L224 91 L197 102 Z" fill="#C9795C"/>
+    <ellipse cx="94" cy="118" rx="34" ry="27" fill="#91A991"/>
+    <circle cx="178" cy="68" r="6" fill="#2F3A35"/>
+    <path d="M169 53 Q180 46 190 53" fill="none" stroke="#6F826F" stroke-width="4" stroke-linecap="round"/>
+    <path d="M74 150 Q89 168 105 150 M122 151 Q138 168 154 148" fill="none" stroke="#C9795C" stroke-width="7" stroke-linecap="round"/>
+    <path d="M82 86 Q104 66 128 88 Q105 107 82 86 Z" fill="#7F987F"/>
+    <path d="M83 87 Q106 93 127 88" fill="none" stroke="#6F826F" stroke-width="3"/>
+    
+    <path d="M169 67 Q178 73 187 67" fill="none" stroke="#2F3A35" stroke-width="4" stroke-linecap="round"/>
+    <path d="M202 38 h16 M209 30 v16" stroke="#C9A66B" stroke-width="4" stroke-linecap="round"/>
+    <path d="M216 23 h10 M221 18 v10" stroke="#C9A66B" stroke-width="3" stroke-linecap="round"/>
+
+  </g>
+</svg>

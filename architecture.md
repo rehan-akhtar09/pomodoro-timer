@@ -212,6 +212,28 @@ PAUSED -> pause/fade audio according to the user's configured behavior
 COMPLETED -> fade background music and play completion sound
 Audio playback errors must be isolated from the timer.
 
+### Bird Behavior Controller
+Owns the bird's movement between named environment anchors and its
+extended pose state, separate from (and layered on top of) the existing
+BirdState/timerStateToBirdState system. Never mutates TimerState — the
+timer is the only source of truth for session state; the controller only
+reacts to it (source: docs/design-reference/bird-behavior-spec).
+
+Extended pose states (superset of the current 5): IDLE, WAKE, FOCUS_CALM,
+FOCUS_ALERT, FOCUS_ANTICIPATION, WALK, HOP, FLY, LAND, SLEEPY,
+WALK_TO_NEST, NEST_SETTLE, SLEEP, WAKE_FROM_NEST, HAPPY, RECEIVE_GIFT,
+CARRY_GIFT, PLACE_GIFT.
+
+Named anchors (percentage-based positions within Environment, not pixel
+coordinates): nest, branch_left, branch_right, ground_left,
+ground_center, ground_right.
+
+Integrates with the existing Phase 4B Reward Service: on focus
+completion, the existing reward-creation flow triggers
+RECEIVE_GIFT -> CARRY_GIFT -> WALK_TO_NEST -> PLACE_GIFT before the
+gift's existing settle-in animation plays in .environment__nest — this
+extends, not replaces, the current reward/nest system.
+
 ## 4. Data Flow
 
 1. User presses Start.

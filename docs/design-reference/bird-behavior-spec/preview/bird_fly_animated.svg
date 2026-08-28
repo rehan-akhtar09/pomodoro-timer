@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+<title>Pomodoro Bird — Fly Animation Preview</title>
+<style>
+.bird { animation: fly .9s ease-in-out infinite alternate; transform-origin: 118px 112px; }
+.wing { animation: flap .3s ease-in-out infinite alternate; transform-origin: 100px 92px; }
+@keyframes fly { from { transform: translateY(5px) rotate(-2deg); } to { transform: translateY(-8px) rotate(2deg); } }
+@keyframes flap { from { transform: rotate(-12deg); } to { transform: rotate(22deg); } }
+</style>
+<g class="bird">
+<ellipse cx="118" cy="112" rx="66" ry="52" fill="#A9BDA8"/>
+<circle cx="166" cy="77" r="42" fill="#A9BDA8"/>
+<path d="M197 80 L224 91 L197 102 Z" fill="#C9795C"/>
+<circle cx="178" cy="68" r="6" fill="#2F3A35"/>
+<path class="wing" d="M82 86 Q104 55 132 82 Q106 105 82 86 Z" fill="#7F987F"/>
+</g>
+</svg>

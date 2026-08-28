@@ -4,6 +4,9 @@ coverage
 *.local
 .DS_Store
 
+# Original asset-pack source (Rive/Flutter origin) — sorted copies live in public/assets/.
+pomodoro_bird_animation_assets/
+
 # Environment files and credentials — never commit secrets (rules.md §6).
 .env
 .env.*

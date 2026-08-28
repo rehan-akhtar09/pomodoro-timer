@@ -253,6 +253,34 @@ The user can optionally enable a calm background soundscape during Focus and Bre
 
 ---
 
+## Phase 5B — Bird Behavior & Movement
+
+### Goal
+Replace the current mostly-static bird with the richer movement/behavior
+system described in design.md §18, fixing the "feels like a stationary
+timer" problem, using the reorganized assets under public/assets/ and
+the reference spec in docs/design-reference/bird-behavior-spec/.
+
+Tasks:
+- Extend BirdState/birdStates.ts with the new pose states (do not remove
+  or break the existing 5-state mapping used elsewhere).
+- Build the Bird Behavior Controller (movement between named anchors,
+  session-length-based sleep policy, near-completion alert).
+- Wire gift delivery (RECEIVE_GIFT/CARRY_GIFT/WALK_TO_NEST/PLACE_GIFT)
+  into the existing Phase 4B reward-completion flow.
+- Implement draggable gift repositioning with normalized-coordinate
+  persistence via the existing Storage Service.
+- Full reduced-motion compliance (instant state/position updates, no
+  skipped final-state visuals).
+- Tests: reduced motion behavior, reload persistence of gift positions,
+  exactly-once reward/carry behavior, small-screen layout.
+
+**Exit criteria:** The bird visibly moves and reacts throughout a
+session rather than remaining static; the acceptance criteria in
+docs/design-reference/bird-behavior-spec/bird_animation_spec.md are met
+using CSS/SVG (not Rive), respecting reduced motion and existing timer/
+reward correctness.
+
 ## Phase 6 — Testing and Quality
 
 ### Goal

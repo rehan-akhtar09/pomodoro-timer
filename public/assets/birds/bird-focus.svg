@@ -1,12 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-<g stroke="#263238" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-<ellipse cx="120" cy="132" rx="68" ry="62" fill="#78C6C8"/>
-<path d="M72 135c-23 6-34 22-32 39 19 3 37-7 47-25" fill="#55AEB5"/>
-<path d="M168 135c23 6 34 22 32 39-19 3-37-7-47-25" fill="#55AEB5"/>
-<path d="M88 114h18M134 114h18" fill="none"/>
-<path d="M112 130l8 7 8-7-8-9z" fill="#F3B45B"/>
-<path d="M105 151c9 6 21 6 30 0" fill="none"/>
-<path d="M96 174h48v30H96z" fill="#F5E7C8"/>
-<path d="M106 185h28M106 194h20" fill="none"/>
-<path d="M98 204v8M142 204v8M91 212h14M135 212h14" fill="none"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="title desc">
+  <title id="title">Pomodoro Bird — Focus</title>
+  <desc id="desc">Cozy Pomodoro Bird character in the focus state.</desc>
+  <g transform="">
+    <ellipse cx="118" cy="112" rx="66" ry="52" fill="#A9BDA8"/>
+    <circle cx="166" cy="77" r="42" fill="#A9BDA8"/>
+    <path d="M197 80 L224 91 L197 102 Z" fill="#C9795C"/>
+    <ellipse cx="94" cy="118" rx="34" ry="27" fill="#91A991"/>
+    <circle cx="178" cy="68" r="6" fill="#2F3A35"/>
+    <path d="M169 53 Q180 46 190 53" fill="none" stroke="#6F826F" stroke-width="4" stroke-linecap="round"/>
+    <path d="M74 150 Q89 168 105 150 M122 151 Q138 168 154 148" fill="none" stroke="#C9795C" stroke-width="7" stroke-linecap="round"/>
+    <path d="M82 86 Q104 66 128 88 Q105 107 82 86 Z" fill="#7F987F"/>
+    <path d="M83 87 Q106 93 127 88" fill="none" stroke="#6F826F" stroke-width="3"/>
+    <path d="M169 52 Q179 48 189 52" fill="none" stroke="#6F826F" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>
