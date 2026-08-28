@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Pomodoro Bird — Cloud Firestore security rules.
+//
+// Authorization is enforced HERE on the server (rules.md §6: client-side
+// checks alone are never sufficient). Every user document lives under
+// `users/{uid}/...` (architecture.md §5.1 — profile, settings, statistics,
+// sessions/{sessionId}) and is readable/writable only by the authenticated
+// user whose UID matches the path segment. Unauthenticated access is blocked
+// everywhere. Static assets (bird/gift SVGs) are application assets and are
+// never stored in Firestore.
+//
+// Deploy: firebase deploy --only firestore:rules  (requires firebase-tools
+// and `firebase login` against the project bird-pomodoro-timer).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

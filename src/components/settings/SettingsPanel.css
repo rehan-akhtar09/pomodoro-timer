@@ -152,3 +152,84 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
 }
+
+/* Account section — minimal auth UI for the optional cloud layer. Sits below
+   the settings form. When Firebase is not configured the section degrades to
+   a quiet note and the app keeps running fully local-only (design.md §13). */
+.settings-panel__account-section {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.settings-panel__account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-panel__account-note {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.settings-panel__account-email {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.settings-panel__account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.settings-panel__account-button {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.settings-panel__account-button:hover:not(:disabled) {
+  border-color: var(--color-primary-dark);
+  background-color: var(--color-surface);
+}
+
+.settings-panel__account-button:disabled,
+.settings-panel__account-link:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settings-panel__account-link {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-dark);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.settings-panel__account-message {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.settings-panel__account-message--ok {
+  color: var(--color-success);
+}
+
+.settings-panel__account-message--error {
+  color: #c0392b;
+}

@@ -19,8 +19,11 @@ export interface UseSessionStatsResult {
     sessions: SessionRecord[];
     /** Derived, user-facing statistics. */
     stats: SessionStats;
-    /** Append a completed-session event to the history. */
-    recordSession: (event: SessionCompletionEvent) => void;
+    /**
+     * Append a completed-session event to the history and return the created
+     * record so the App shell can push the same record to Firestore.
+     */
+    recordSession: (event: SessionCompletionEvent) => SessionRecord;
 }
 
 /** Stable unique id; the Phase 4B reward service reuses it for idempotency. */
@@ -48,7 +51,7 @@ export function useSessionStats(): UseSessionStatsResult {
         storageService.set(STORAGE_KEYS.sessions, sessions);
     }, [sessions]);
 
-    const recordSession = useCallback((event: SessionCompletionEvent) => {
+    const recordSession = useCallback((event: SessionCompletionEvent): SessionRecord => {
         const record: SessionRecord = {
             id: createSessionId(),
             mode: event.mode,
@@ -56,6 +59,7 @@ export function useSessionStats(): UseSessionStatsResult {
             completedAt: Date.now(),
         };
         setSessions((current) => [...current, record]);
+        return record;
     }, []);
 
     return {

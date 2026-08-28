@@ -11,16 +11,39 @@
  */
 
 import { useState, type FormEvent } from 'react';
+import type {
+    AuthActionResult,
+    AuthUserInfo,
+    SimpleAuthResult,
+} from '../../services/auth/authService';
 import type { SettingsValidationErrors } from '../../types/settings';
 import type { TimerSettings } from '../../types/timer';
 import { validateSettings } from '../../utils/validation';
 import './SettingsPanel.css';
+
+/**
+ * The optional account layer handed down from the App shell (useAuth). When
+ * `available` is false the account UI degrades to a quiet note and the app
+ * keeps running fully local-only (PRD.md §5 P2).
+ */
+export interface AccountProps {
+    user: AuthUserInfo | null;
+    /** True while an auth action is in flight. */
+    busy: boolean;
+    /** False when Firebase Auth is not configured on this device. */
+    available: boolean;
+    createAccount: (email: string, password: string) => Promise<AuthActionResult>;
+    signIn: (email: string, password: string) => Promise<AuthActionResult>;
+    signOut: () => Promise<SimpleAuthResult>;
+    sendPasswordReset: (email: string) => Promise<SimpleAuthResult>;
+}
 
 interface SettingsPanelProps {
     settings: TimerSettings;
     /** True when the last persist attempt failed (from useSettings). */
     saveFailed: boolean;
     updateSettings: (next: TimerSettings) => boolean;
+    account: AccountProps;
 }
 
 interface DraftState {
@@ -112,7 +135,155 @@ function buildSettings(
     return { settings: next, errors };
 }
 
-export function SettingsPanel({ settings, saveFailed, updateSettings }: SettingsPanelProps) {
+interface AccountMessage {
+    kind: 'ok' | 'error';
+    text: string;
+}
+
+interface AccountSectionProps {
+    account: AccountProps;
+}
+
+type AccountActionResult = { ok: boolean; error?: string | null };
+
+/**
+ * Minimal account UI (rules.md Firebase sections — no secrets here, all auth
+ * goes through the authService). Signed-out: email/password forms for sign-in,
+ * account creation and password reset. Signed-in: calm status + sign out. When
+ * Firebase is not configured the section degrades to a quiet note and the app
+ * keeps running fully local-only (design.md §13).
+ */
+function AccountSection({ account }: AccountSectionProps) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState<AccountMessage | null>(null);
+
+    const run = async (action: () => Promise<AccountActionResult>, okText: string) => {
+        setMessage(null);
+        const result = await action();
+        if (result.ok) {
+            setPassword('');
+            setMessage({ kind: 'ok', text: okText });
+        } else {
+            setMessage({
+                kind: 'error',
+                text: result.error ?? 'Something went wrong. Please try again.',
+            });
+        }
+    };
+
+    if (!account.available) {
+        return (
+            <p className="settings-panel__account-note">
+                Cloud sync is not configured on this device — your data stays on this device only.
+            </p>
+        );
+    }
+
+    if (account.user !== null) {
+        return (
+            <div className="settings-panel__account">
+                <p className="settings-panel__account-email">
+                    Signed in as <strong>{account.user.email ?? account.user.uid}</strong>
+                </p>
+                <button
+                    type="button"
+                    className="settings-panel__account-button"
+                    disabled={account.busy}
+                    onClick={() =>
+                        void run(() => account.signOut(), 'Signed out. Your data stays on this device.')
+                    }
+                >
+                    Sign out
+                </button>
+            </div>
+        );
+    }
+
+    const canSubmit = email.trim() !== '' && password.length > 0;
+
+    return (
+        <div className="settings-panel__account">
+            <div className="settings-panel__field">
+                <label className="settings-panel__label" htmlFor="account-email">
+                    Email
+                </label>
+                <input
+                    id="account-email"
+                    className="settings-panel__input"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+            </div>
+            <div className="settings-panel__field">
+                <label className="settings-panel__label" htmlFor="account-password">
+                    Password
+                </label>
+                <input
+                    id="account-password"
+                    className="settings-panel__input"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                />
+            </div>
+            <div className="settings-panel__account-actions">
+                <button
+                    type="button"
+                    className="settings-panel__account-button"
+                    disabled={account.busy || !canSubmit}
+                    onClick={() =>
+                        void run(
+                            () => account.signIn(email.trim(), password),
+                            'Signed in — syncing your data.',
+                        )
+                    }
+                >
+                    Sign in
+                </button>
+                <button
+                    type="button"
+                    className="settings-panel__account-button"
+                    disabled={account.busy || !canSubmit}
+                    onClick={() =>
+                        void run(
+                            () => account.createAccount(email.trim(), password),
+                            'Account created — you are signed in.',
+                        )
+                    }
+                >
+                    Create account
+                </button>
+                <button
+                    type="button"
+                    className="settings-panel__account-link"
+                    disabled={account.busy || email.trim() === ''}
+                    onClick={() =>
+                        void run(
+                            () => account.sendPasswordReset(email.trim()),
+                            'Password reset email sent.',
+                        )
+                    }
+                >
+                    Send password reset
+                </button>
+            </div>
+            {message !== null && (
+                <p
+                    className={`settings-panel__account-message settings-panel__account-message--${message.kind}`}
+                    role="status"
+                >
+                    {message.text}
+                </p>
+            )}
+        </div>
+    );
+}
+
+export function SettingsPanel({ settings, saveFailed, updateSettings, account }: SettingsPanelProps) {
     const [draft, setDraft] = useState<DraftState>(() => ({
         focusMinutes: minutesOf(settings.focusDuration),
         shortBreakMinutes: minutesOf(settings.shortBreakDuration),
@@ -247,6 +418,11 @@ export function SettingsPanel({ settings, saveFailed, updateSettings }: Settings
                     {SAVE_FAILED_MESSAGE}
                 </p>
             )}
+
+            <div className="settings-panel__account-section">
+                <h3 className="settings-panel__legend">Account</h3>
+                <AccountSection account={account} />
+            </div>
         </section>
     );
 }
