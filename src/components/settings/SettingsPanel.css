@@ -153,6 +153,58 @@
   border-radius: var(--radius-sm);
 }
 
+/* Phase 5 sections (Sound, Accessibility) — share the divider pattern with
+   the Account section below. These live outside the timer form because audio
+   preferences apply immediately and never gate the timer (design.md §16). */
+.settings-panel__section {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.settings-panel__sound {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-panel__volume-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.settings-panel__volume-value {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.settings-panel__range {
+  width: 100%;
+  accent-color: var(--color-primary-dark);
+}
+
+.settings-panel__notification {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.settings-panel__status {
+  color: var(--color-muted);
+}
+
+.settings-panel__status--ok {
+  color: var(--color-success);
+}
+
 /* Account section — minimal auth UI for the optional cloud layer. Sits below
    the settings form. When Firebase is not configured the section degrades to
    a quiet note and the app keeps running fully local-only (design.md §13). */

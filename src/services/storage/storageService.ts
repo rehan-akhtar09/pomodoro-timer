@@ -29,6 +29,7 @@ export const STORAGE_KEYS = {
     settings: 'settings',
     sessions: 'sessions',
     rewards: 'rewards',
+    audioPreferences: 'audioPreferences',
 } as const;
 
 const STORAGE_PREFIX = 'pomodoro-bird';

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BirdCompanion } from './components/bird/BirdCompanion';
 import { timerStateToBirdState } from './components/bird/birdStates';
 import { Environment } from './components/environment/Environment';
@@ -7,15 +7,19 @@ import { SessionStats as SessionStatsPanel } from './components/stats/SessionSta
 import { Timer } from './components/timer/Timer';
 import { TimerControls } from './components/timer/TimerControls';
 import { TimerProgress } from './components/timer/TimerProgress';
+import { useAudioPreferences } from './hooks/useAudioPreferences';
 import { useAuth } from './hooks/useAuth';
 import { usePomodoro, type SessionCompletionEvent } from './hooks/usePomodoro';
 import { useRewards } from './hooks/useRewards';
 import { useSessionStats } from './hooks/useSessionStats';
 import { useSettings } from './hooks/useSettings';
 import { useSync } from './hooks/useSync';
+import { AudioService } from './services/audio/audioService';
+import { AUDIO_TRACK_URLS } from './services/audio/trackUrls';
+import { notifyCompletion } from './services/notifications/notificationService';
 import type { GiftRecord } from './types/rewards';
 import type { SessionRecord, SessionStats } from './types/stats';
-import type { TimerSettings, TimerState } from './types/timer';
+import type { SessionMode, TimerSettings, TimerState } from './types/timer';
 import { deriveSessionStats } from './utils/sessionStats';
 import './App.css';
 
@@ -40,6 +44,29 @@ interface TimerWorkspaceProps {
     pushRewards: (rewards: GiftRecord[]) => void;
 }
 
+/** Calm, color-independent completion copy for the optional notification. */
+function completionTitle(mode: SessionMode): string {
+    switch (mode) {
+        case 'focus':
+            return 'Focus complete';
+        case 'shortBreak':
+            return 'Break complete';
+        case 'longBreak':
+            return 'Long break complete';
+    }
+}
+
+function completionBody(mode: SessionMode): string {
+    switch (mode) {
+        case 'focus':
+            return 'Time for a break — well done.';
+        case 'shortBreak':
+            return 'Ready to focus again?';
+        case 'longBreak':
+            return 'Ready for a fresh focus session?';
+    }
+}
+
 function TimerWorkspace({
     account,
     pushSession,
@@ -51,6 +78,38 @@ function TimerWorkspace({
     const { settings, saveFailed, updateSettings } = useSettings();
     const { sessions, stats, recordSession } = useSessionStats();
     const { rewards, recordReward } = useRewards();
+    const {
+        prefs: audioPrefs,
+        saveFailed: audioSaveFailed,
+        updateAudioPreferences,
+    } = useAudioPreferences();
+
+    // Calm, auto-dismissing feedback for non-fatal playback problems
+    // (autoplay blocked, missing/corrupt asset). Never an error (rules.md).
+    const [audioFeedback, setAudioFeedback] = useState<string | null>(null);
+
+    // One AudioService per workspace mount. Created inside an effect so the
+    // StrictMode double-mount in dev disposes the first instance and creates a
+    // fresh one (dispose is idempotent; the ref always points at a live
+    // service after mount).
+    const audioServiceRef = useRef<AudioService | null>(null);
+    useEffect(() => {
+        const service = new AudioService({
+            tracks: AUDIO_TRACK_URLS,
+            onFeedback: (_kind, message) => setAudioFeedback(message),
+        });
+        audioServiceRef.current = service;
+        return () => {
+            service.dispose();
+            audioServiceRef.current = null;
+        };
+    }, []);
+
+    // Keep the service in sync with persisted prefs (enable flags, volumes,
+    // pause behavior) and timer transitions (Audio State — architecture.md §3).
+    useEffect(() => {
+        audioServiceRef.current?.setPreferences(audioPrefs);
+    }, [audioPrefs]);
 
     // Settings sync only on explicit user updates (the merge already handled
     // the signed-in state, so a broad change effect could clobber cloud data).
@@ -69,6 +128,10 @@ function TimerWorkspace({
     // no second completion-detection mechanism (rules.md §6).
     const handleSessionComplete = useCallback(
         (event: SessionCompletionEvent) => {
+            // Completion feedback: chime + optional notification, both fire
+            // and forget and neither can affect the timer (rules.md).
+            audioServiceRef.current?.playCompletionSound();
+            notifyCompletion(completionTitle(event.mode), completionBody(event.mode));
             const record = recordSession(event);
             recordReward(event);
             if (record !== null) {
@@ -83,6 +146,31 @@ function TimerWorkspace({
         settings,
         handleSessionComplete,
     );
+
+    useEffect(() => {
+        audioServiceRef.current?.updateTimerState(state);
+    }, [state]);
+
+    // A direct user interaction may unlock autoplay — give a blocked
+    // background track one retry, then leave the timer alone (rules.md).
+    const handleStart = useCallback(() => {
+        audioServiceRef.current?.notifyUserGesture();
+        start();
+    }, [start]);
+
+    const handleResume = useCallback(() => {
+        audioServiceRef.current?.notifyUserGesture();
+        resume();
+    }, [resume]);
+
+    // Auto-dismiss the audio status line so it never demands attention.
+    useEffect(() => {
+        if (audioFeedback === null) {
+            return;
+        }
+        const timerId = window.setTimeout(() => setAudioFeedback(null), 6000);
+        return () => window.clearTimeout(timerId);
+    }, [audioFeedback]);
 
     // Session-start sync: usePomodoro emits no start event, so detect the
     // transition INTO FOCUSING at the shell. A resume from FOCUS_PAUSED is not
@@ -111,6 +199,12 @@ function TimerWorkspace({
 
     return (
         <>
+            {audioFeedback !== null && (
+                <p className="app__audio-feedback" role="status">
+                    {audioFeedback}
+                </p>
+            )}
+
             <div className="scene">
                 <Environment rewards={rewards} />
                 <div className="scene__bird">
@@ -128,9 +222,9 @@ function TimerWorkspace({
                 />
                 <TimerControls
                     state={state}
-                    onStart={start}
+                    onStart={handleStart}
                     onPause={pause}
-                    onResume={resume}
+                    onResume={handleResume}
                     onReset={reset}
                     onSkip={skip}
                 />
@@ -142,6 +236,9 @@ function TimerWorkspace({
                 settings={settings}
                 saveFailed={saveFailed}
                 updateSettings={handleUpdateSettings}
+                audioPreferences={audioPrefs}
+                audioSaveFailed={audioSaveFailed}
+                updateAudioPreferences={updateAudioPreferences}
                 account={account}
             />
         </>

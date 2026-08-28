@@ -106,7 +106,8 @@
    ============================================================ */
 
 .app__sync,
-.app__sync-error {
+.app__sync-error,
+.app__audio-feedback {
   margin: 0;
   padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-sm);
@@ -118,8 +119,13 @@
   text-align: center;
 }
 
-.app__sync {
+.app__sync,
+.app__audio-feedback {
   color: var(--color-muted);
+}
+
+.app__audio-feedback {
+  margin: 0 0 var(--space-2);
 }
 
 .app__sync-error {

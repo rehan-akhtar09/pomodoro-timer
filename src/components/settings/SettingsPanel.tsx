@@ -1,13 +1,20 @@
 /**
- * SettingsPanel — Phase 4 settings form.
+ * SettingsPanel — Phase 4 settings form + Phase 5 Sound & Accessibility.
  *
- * Reads/writes ONLY through the useSettings hook (architecture.md §3 — the
- * panel never touches the Storage Service directly). Durations are entered in
- * minutes and converted to the seconds that TimerSettings stores. Input is
- * validated before it reaches TimerSettings: negative or zero values are
- * rejected with inline errors and never silently clamped (rules.md §4). A
- * failed persist surfaces the calm design.md §13 message while the timer keeps
- * working in memory.
+ * The timer form reads/writes ONLY through the useSettings hook
+ * (architecture.md §3 — the panel never touches the Storage Service directly).
+ * Durations are entered in minutes and converted to the seconds that
+ * TimerSettings stores. Input is validated before it reaches TimerSettings:
+ * negative or zero values are rejected with inline errors and never silently
+ * clamped (rules.md §4). A failed persist surfaces the calm design.md §13
+ * message while the timer keeps working in memory.
+ *
+ * Sound & Accessibility (Phase 5) live OUTSIDE the form because they apply
+ * immediately: audio toggles/volumes persist through useAudioPreferences and
+ * flow straight to the Audio Service, and the notification permission request
+ * must come from a direct user interaction (rules.md — autoplay/permission).
+ * Reduced motion intentionally follows the operating-system setting
+ * (usePrefersReducedMotion) with no separate persisted toggle.
  */
 
 import { useState, type FormEvent } from 'react';
@@ -16,6 +23,9 @@ import type {
     AuthUserInfo,
     SimpleAuthResult,
 } from '../../services/auth/authService';
+import { useNotificationPermission } from '../../hooks/useNotificationPermission';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { AudioPreferences } from '../../types/audio';
 import type { SettingsValidationErrors } from '../../types/settings';
 import type { TimerSettings } from '../../types/timer';
 import { validateSettings } from '../../utils/validation';
@@ -43,6 +53,11 @@ interface SettingsPanelProps {
     /** True when the last persist attempt failed (from useSettings). */
     saveFailed: boolean;
     updateSettings: (next: TimerSettings) => boolean;
+    /** Current audio preferences (applied immediately by the Sound section). */
+    audioPreferences: AudioPreferences;
+    /** True when the last audio preference persist failed (from useAudioPreferences). */
+    audioSaveFailed: boolean;
+    updateAudioPreferences: (next: AudioPreferences) => boolean;
     account: AccountProps;
 }
 
@@ -72,6 +87,9 @@ function minutesOf(seconds: number): string {
 
 const SAVE_FAILED_MESSAGE =
     "We couldn't save your settings. Your timer will keep working, but changes may not persist.";
+
+const AUDIO_SAVE_FAILED_MESSAGE =
+    "We couldn't save your sound settings. Your timer will keep working, but changes may not persist.";
 
 /** Render one labelled number input with an inline error or hint below it. */
 function NumberField({
@@ -283,7 +301,230 @@ function AccountSection({ account }: AccountSectionProps) {
     );
 }
 
-export function SettingsPanel({ settings, saveFailed, updateSettings, account }: SettingsPanelProps) {
+interface VolumeFieldProps {
+    id: string;
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+}
+
+/** One labelled 0..1 volume slider with a readable percentage value. */
+function VolumeField({ id, label, value, onChange }: VolumeFieldProps) {
+    const percent = Math.round(value * 100);
+    return (
+        <div className="settings-panel__field">
+            <div className="settings-panel__volume-label">
+                <label className="settings-panel__label" htmlFor={id}>
+                    {label}
+                </label>
+                <span className="settings-panel__volume-value" aria-hidden="true">
+                    {percent}%
+                </span>
+            </div>
+            <input
+                id={id}
+                className="settings-panel__range"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={value}
+                onChange={(event) => onChange(Number(event.target.value))}
+                aria-valuetext={`${percent}%`}
+            />
+        </div>
+    );
+}
+
+/**
+ * Optional browser-notification permission control (PRD.md — Notifications).
+ * The request runs from this button's click — a direct user interaction — and
+ * the service never throws, so all outcomes are calm status text (design.md §13).
+ */
+function NotificationControl() {
+    const { permission, requesting, request } = useNotificationPermission();
+
+    if (permission === 'granted') {
+        return (
+            <p className="settings-panel__status settings-panel__status--ok">
+                Notifications are on.
+            </p>
+        );
+    }
+
+    if (permission === 'denied' || permission === 'request-denied') {
+        return (
+            <p className="settings-panel__hint">
+                Notifications are blocked in your browser settings.
+            </p>
+        );
+    }
+
+    if (permission === 'unsupported') {
+        return (
+            <p className="settings-panel__hint">Notifications aren't supported in this browser.</p>
+        );
+    }
+
+    // 'default' (never asked) or 'request-error' (ask again).
+    const failed = permission === 'request-error';
+    return (
+        <div className="settings-panel__notification">
+            {failed ? (
+                <p className="settings-panel__hint">
+                    We couldn't ask for notification permission. You can try again.
+                </p>
+            ) : (
+                <p className="settings-panel__hint">
+                    Get a gentle reminder when a session completes.
+                </p>
+            )}
+            <button
+                type="button"
+                className="settings-panel__account-button"
+                disabled={requesting}
+                onClick={() => void request()}
+            >
+                {requesting ? 'Asking…' : 'Enable notifications'}
+            </button>
+        </div>
+    );
+}
+
+interface SoundSectionProps {
+    audioPreferences: AudioPreferences;
+    audioSaveFailed: boolean;
+    updateAudioPreferences: (next: AudioPreferences) => boolean;
+}
+
+/**
+ * Sound & Cozy Soundscape preferences (design.md §16). Unlike the timer form,
+ * these apply immediately — no Save step — because the Audio Service reads them
+ * live and they are optional enhancements that never block the timer.
+ */
+function SoundSection({ audioPreferences, audioSaveFailed, updateAudioPreferences }: SoundSectionProps) {
+    const setAudioPref = (patch: Partial<AudioPreferences>) => {
+        updateAudioPreferences({ ...audioPreferences, ...patch });
+    };
+
+    return (
+        <div className="settings-panel__section">
+            <h3 className="settings-panel__legend">Sound</h3>
+            <div className="settings-panel__sound">
+                <div className="settings-panel__toggle">
+                    <label className="settings-panel__toggle-label" htmlFor="audio-focus-music">
+                        <input
+                            id="audio-focus-music"
+                            type="checkbox"
+                            checked={audioPreferences.focusMusicEnabled}
+                            onChange={(event) =>
+                                setAudioPref({ focusMusicEnabled: event.target.checked })
+                            }
+                        />
+                        <span>Focus music</span>
+                    </label>
+                </div>
+
+                <VolumeField
+                    id="audio-background-volume"
+                    label="Background volume"
+                    value={audioPreferences.backgroundVolume}
+                    onChange={(value) => setAudioPref({ backgroundVolume: value })}
+                />
+
+                <div className="settings-panel__toggle">
+                    <label className="settings-panel__toggle-label" htmlFor="audio-break-music">
+                        <input
+                            id="audio-break-music"
+                            type="checkbox"
+                            checked={audioPreferences.breakMusicEnabled}
+                            onChange={(event) =>
+                                setAudioPref({ breakMusicEnabled: event.target.checked })
+                            }
+                        />
+                        <span>Break music</span>
+                    </label>
+                </div>
+
+                <div className="settings-panel__toggle">
+                    <label className="settings-panel__toggle-label" htmlFor="audio-completion-sound">
+                        <input
+                            id="audio-completion-sound"
+                            type="checkbox"
+                            checked={audioPreferences.completionSoundEnabled}
+                            onChange={(event) =>
+                                setAudioPref({ completionSoundEnabled: event.target.checked })
+                            }
+                        />
+                        <span>Completion sound</span>
+                    </label>
+                </div>
+
+                <VolumeField
+                    id="audio-completion-volume"
+                    label="Completion volume"
+                    value={audioPreferences.completionVolume}
+                    onChange={(value) => setAudioPref({ completionVolume: value })}
+                />
+
+                <div className="settings-panel__toggle">
+                    <label className="settings-panel__toggle-label" htmlFor="audio-pause-fade">
+                        <input
+                            id="audio-pause-fade"
+                            type="checkbox"
+                            checked={audioPreferences.pauseBehavior === 'fade'}
+                            onChange={(event) =>
+                                setAudioPref({
+                                    pauseBehavior: event.target.checked ? 'fade' : 'pause',
+                                })
+                            }
+                        />
+                        <span>Gently fade music when paused</span>
+                    </label>
+                </div>
+
+                <NotificationControl />
+            </div>
+
+            {audioSaveFailed && (
+                <p className="settings-panel__save-failed" role="status">
+                    {AUDIO_SAVE_FAILED_MESSAGE}
+                </p>
+            )}
+        </div>
+    );
+}
+
+/**
+ * Accessibility (design.md §9/§12). Reduced motion intentionally follows the
+ * operating-system setting rather than a persisted app toggle, so this section
+ * reports the current state calmly instead of adding a control.
+ */
+function AccessibilitySection() {
+    const reduced = usePrefersReducedMotion();
+
+    return (
+        <div className="settings-panel__section">
+            <h3 className="settings-panel__legend">Accessibility</h3>
+            <p className="settings-panel__hint">
+                Reduced motion follows your system setting.{' '}
+                <span className="settings-panel__status">
+                    {reduced ? 'Motion: reduced' : 'Motion: standard'}
+                </span>
+            </p>
+        </div>
+    );
+}
+
+export function SettingsPanel({
+    settings,
+    saveFailed,
+    updateSettings,
+    audioPreferences,
+    audioSaveFailed,
+    updateAudioPreferences,
+    account,
+}: SettingsPanelProps) {
     const [draft, setDraft] = useState<DraftState>(() => ({
         focusMinutes: minutesOf(settings.focusDuration),
         shortBreakMinutes: minutesOf(settings.shortBreakDuration),
@@ -418,6 +659,14 @@ export function SettingsPanel({ settings, saveFailed, updateSettings, account }:
                     {SAVE_FAILED_MESSAGE}
                 </p>
             )}
+
+            <SoundSection
+                audioPreferences={audioPreferences}
+                audioSaveFailed={audioSaveFailed}
+                updateAudioPreferences={updateAudioPreferences}
+            />
+
+            <AccessibilitySection />
 
             <div className="settings-panel__account-section">
                 <h3 className="settings-panel__legend">Account</h3>
